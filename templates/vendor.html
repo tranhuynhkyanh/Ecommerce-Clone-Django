@@ -1,0 +1,227 @@
+{% extends "index.html" %}
+{%load static%}
+
+{%block body%}
+
+<div class="section" id="vendor">
+    <div class="container">
+        <div class="row">
+            <div id="header">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<!-- LOGO -->
+						<div class="col-md-6">
+							<div class="header-logo">
+								<a href="#" class="logo" style="color:white;">
+									<img src="{{vendor.image.url}}" alt="" style="width: 100px; height: 100px">
+								</a>
+							</div>
+                            <div class="row">
+                                <div class="col">
+                                    <h2 id= "vendorS" href="#" class="logo" style="color: white;">{{vendor.title}}</h2>
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="col">
+                                    <button href="#" class="search-btn" >Chat</button>
+                                </div>
+                                <div class="col">
+                                    {%if is_followed%}
+                                        <a href="{%url 'userauth:follow' vendor.vid%}" class="search-btn" style="color: white;">Unfollow</a>
+                                    {%else%}
+                                        <a href="{%url 'userauth:follow' vendor.vid%}" class="search-btn"style="color: white;">Follow</a>
+                                    {%endif%}
+                                </div>
+                            </div>
+
+						</div>
+						<!-- /LOGO -->
+
+						<!-- SEARCH BAR -->
+						<div class="col-md-6 ">
+							<div class="header-search">
+								<form>
+									<input id = "searchVendor" class="input" placeholder="Search here">
+									<button class="search-btn">Search</button>
+								</form>
+							</div>
+                            
+                            <div id="results-box1" class="cart-list"></div>
+						</div>
+						<!-- /SEARCH BAR -->
+
+					</div>
+					<!-- row -->
+				</div>
+				<!-- container -->
+			</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+
+            <!-- section title -->
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h3 class="title">New Products</h3>
+                </div>
+            </div>
+            <!-- /section title -->
+
+            <!-- Products tab & slick -->
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="products-tabs">
+                        <!-- tab -->
+                        <div id="tab1" class="tab-pane active">
+                            <div class="products-slick" data-nav="#slick-nav-1">
+                                <!-- product -->
+                                {%for new in new_products%}
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="{{new.image.url}}" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">{{new.category.title}}</p>
+                                            <h3 class="product-name"><a href="{%url 'product-detail' new.pid%}">{{new.title}}</a></h3>
+                                            <h4 class="product-price">{{new.price}}<del class="product-old-price">{{new.old_price}}</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                        </div>
+                                    </div>
+                                {%endfor%}
+                                <!-- /product -->
+
+                            </div>
+                            <div id="slick-nav-1" class="products-slick-nav"></div>
+                        </div>
+                        <!-- /tab -->
+                    </div>
+                </div>
+            </div>
+            <!-- Products tab & slick -->
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+
+            <!-- section title -->
+            <div class="col-md-12">
+             
+
+                    <!-- STORE -->
+                    <div class="col-md-12">
+                        <div class="section-title">
+                            <h3 class="title">All product</h3>
+                        </div>
+                    </div>
+					<div id="store" class="col-md-9">
+                            <!-- store products -->
+                        {%for product in products%}
+                            <div class="row">
+                                <!-- product -->
+                                <div class="col-md-4 col-xs-6">
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="{{product.image.url}}" alt="">
+                                            <div class="product-label">
+                                                <span class="sale">-30%</span>
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">{{product.category}}</p>
+                                            <h3 class="product-name"><a href="{{product.get_absolute_url}}">{{product.title}}</a></h3>
+                                            <h4 class="product-price">{{product.price}}<del class="product-old-price">{{product.old_price}}</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {%endfor%}
+							<!-- /product -->
+						</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+            <!-- /section title -->
+
+{%endblock body%}
+{%block script%}
+<script>
+    const results = document.querySelector("#vendorS");
+    $(document).ready(function() {
+        // Thêm sự kiện lắng nghe thay đổi cho trường tìm kiếm
+        $("#searchVendor").on("keyup", function() {
+            // Gửi yêu cầu AJAX
+            $.ajax({
+                url: "/searchVendor",
+                type: "GET",
+                data: {
+                    q: $(this).val(),
+                    vendor : results.textContent,
+                },
+                success: function(response) {
+                    // Cập nhật danh sách sản phẩm
+                    $("#results-box1").html(response.results.map(function(product) {
+                        return `
+                        <div class="product-widget">
+                            <div class="product-img" >
+                                <img src="${product.image}" alt="">
+                            </div>
+                            <div class="product-body">
+                                <h3 class="product-name"><a href="${product.url}">${product.title}</a></h3>
+                                <h4 class="product-price"><span class="qty">1x</span>${product.price}</h4>
+                            </div>
+                        </div>
+                        `;
+                    }));
+                }
+            });
+        });
+    });
+</script>
+{%endblock script%}

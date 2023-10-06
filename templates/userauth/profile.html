@@ -1,0 +1,182 @@
+{%extends "index.html"%}
+{%load static%}
+{%block nav%}
+{%endblock nav%}
+{%block body%}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="user-profile__avatar shadow-effect text-center">
+        
+        {%if user.image%}
+          <img width="200" height="200" class="img-responsive center-block" src="{{user.image.url}}" alt>
+        {%else%}
+          <img width="200" height="200" class="img-responsive center-block" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt>
+        {%endif%}
+        {{user.first_name}} {{user.last_name}}
+  
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          User Menu
+        </div>
+        <div class="panel-body">
+          <ul>
+            <li><a href="#"><i class="fa fa-user"></i> My Profile</a></li>
+            <li><a href="{%url 'userauth:profile-update'%}"><i class="fa fa-edit"></i> Edit Profile</a></li>
+            <li><a href="#"><i class="fa fa-envelope-o"></i> Messages</a></li>
+            <li><a href="{%url 'userauth:logout' %}"><i class="fa fa-sign-out"></i> Sign Out</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-sm-9">
+      <div class="row">
+        <div class="col-sm-6">
+          
+          <!-- User name -->
+          <h3 class="user-profile__title">{{user.first_name}} {{user.last_name}}</h3>
+          
+          <!-- User description -->
+          <p class="user-profile__desc">
+            Address: {{address.address}}
+          </p>
+          <p class="user-profile__desc">
+            Phone number: {{address.phone}}
+          </p>
+          <!-- User URL -->
+          <div class="user-profile__url">
+            <a href="https://bootdey.com/">https://bootdey.com/</a>
+          </div>
+          <!-- User social links -->
+          <div class="social">
+            <ul class="list-inline">
+              <li>
+                <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+              </li>
+              <li>
+                <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+              </li>
+              <li>
+                <a href="#" class="pinterest"><i class="fa fa-pinterest"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          
+          <!-- Profile info -->
+          <ul class="user-profile__info">
+            <li>
+              <i class="fa fa-eye"></i> 50 follower
+            </li>
+          </ul>
+        </div>
+        <div class="col-sm-12">
+          <div class="user-profile__tabs">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+          
+              <li role="presentation" class="">
+                <a href="#user-profile__shopping-cart" aria-controls="user-profile__shopping-cart" role="tab" data-toggle="tab" aria-expanded="true">My Order</a>
+              </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+              <div role="tabpanel" class="tab-pane fade" id="user-profile__shopping-cart">
+                <div class="table-responsive">
+                  <table class="table table-bordered shopping-cart__table">
+                  <thead>
+                    <tr>
+                      <th>Preview</th>
+                      <th>Invoice</th>
+                      <th>Address</th>
+                      <th>Price</th>
+                      <th>Status</th>
+                      <th>Details</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {%for order in orders%}
+                      <tr class="js-shop__item">
+                        <td>
+                          <img width="50" height="50"class="img-responsive shopping-cart-item__img" src="{{order.image.url}}" alt="...">
+                        </td>
+                        <td>
+                          <div class="shopping-cart-item__title">
+                            {{order.invoice_no}}
+                          </div>
+                        <td>
+                          <div class="shopping-cart-item__title">
+                            {{address.address}}
+                          </div>
+                        </td>
+                        <td>$<span class="js-shop-item__price">{{order.price}}</span></td>
+                        <td> {{order.product_status}}</td>
+                        <td><a href="{%url 'order-detail' order.invoice_no%}" class="text-success" >View</a>
+                        
+                      </tr>
+                    {%endfor%}
+                  </tbody>
+                  </table>
+            </div> <!-- / .tab-content -->
+          </div>
+        </div>
+      </div> <!-- / .row -->
+    </div>
+  </div> <!-- / .row -->
+{%if is_vendor%}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="section-title">
+                <h3 class="title">All product</h3>
+            </div>
+        </div>
+        <div id="store" class="col-md-9">
+                <!-- store products -->
+            {%for product in products%}
+                <div class="row">
+                    <!-- product -->
+                    <div class="col-md-4 col-xs-6">
+                        <div class="product">
+                            <div class="product-img">
+                                <img src="{{product.image.url}}" alt="">
+                                <div class="product-label">
+                                    <span class="sale">-30%</span>
+                                    <span class="new">NEW</span>
+                                </div>
+                            </div>
+                            <div class="product-body">
+                                <p class="product-category">{{product.category}}</p>
+                                <h3 class="product-name"><a href="{{product.get_absolute_url}}">{{product.title}}</a></h3>
+                                <h4 class="product-price">{{product.price}}<del class="product-old-price">{{product.old_price}}</del></h4>
+                                <div class="product-rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product-btns">
+                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                </div>
+                            </div>
+                            <div class="add-to-cart">
+                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                            </div>
+                        </div>
+                    </div>
+                {%endfor%}
+                <!-- /product -->
+            </div>
+        </div>
+    </div>  
+{%endif%}
+</div>
+{%endblock body%}

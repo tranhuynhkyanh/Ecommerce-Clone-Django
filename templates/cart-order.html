@@ -1,0 +1,112 @@
+{% extends "index.html" %}
+{%load static%}
+{%block body%} 
+<section class="h-100" style="background-color: #eee;">
+    <div class="container h-100 py-5">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-10">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-normal mb-0 text-black">Shopping Cart</h3>
+          </div>
+          {%for item in cartItems%}
+            <div class="card rounded-3 mb-4">
+              <div class="card-body p-4">
+                <div class="row d-flex justify-content-between align-items-center">
+                  <div class="col-md-2 col-lg-2 col-xl-2">
+                    <img
+                      width = "100" height = "100"
+                      src="{{item.product.image.url}}"
+                      class="img-fluid rounded-3" alt="Cotton T-shirt">
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-xl-3">
+                    <a href="{%url 'product-detail' item.product.pid%}" id="name_product" class="lead fw-normal mb-2" value={{item.product.pid}}>{{item.product.title}}</a>
+                    
+                    <a href="{%url 'vendor-detail' item.product.vendor.vid %}" id="name-vendor">{{item.product.vendor.title}}</a>
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                      <div class="qty-label">
+                          Qty
+                          <div class="input-number">
+                              <input id="quantity" type="number" name={{item.product.pid}}  value={{item.qty}} onchange="changeFunction(this.value,this.name)">
+                              <span class="qty-up">+</span>
+                              <span class="qty-down">-</span>
+                          </div>
+                          <div id="mess{{item.product.pid}}" style="h3" class="alert alert-{{ message.level_tag }}">
+                            {{ message }}
+                          </div>
+                      </div>
+                      
+                  </div>
+                  <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                    <h5 id="price{{item.product.pid}}"class="mb-0" value={{item.price}}>{{item.price}}</h5>
+                  </div>
+                  <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                    <button name={{item.product.pid}} class="text-success" onclick="updateFunction(this.name)"><i class="fa fa-recycle">Update</i></button>
+                  </div>
+                  <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                    <a href="{%url 'delete' item.product.pid%}" class="text-danger"><i class="fa fa-trash">Delete</i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%endfor%}
+
+  
+          <div class="card">
+            <div class="card-body">
+              <a href="{%url 'checkout' %}" type="button" class="btn btn-warning btn-block btn-lg">Proceed to Pay</a>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </section>
+
+{%endblock body%}
+{%block script%}
+<script>
+	function changeFunction(val,name){
+    console.log(val,name);
+    
+    $("[id='quantity'][name='" + name + "']").attr("value",val);
+    $.ajax({
+      url:'/check-product',
+      type:"GET",
+      data: {
+        pid: name,
+        qty: val,
+      },
+      success: function(response) {
+        console.log(response.messages);
+        $('#price'+name).text(response.price);
+        var mess = response.messages;
+        if(mess !=""){
+          $("#mess"+name).show();
+          $("#mess"+name).html(mess);
+        }
+        else{ 
+          $("#mess"+name).hide();
+        }
+      }
+    });
+  };
+  function updateFunction(name){
+    const input = $("[id='quantity'][name='" + name + "']"); 
+    value = input.attr('value');
+    console.log(value,name);
+    $.ajax({
+      url:'/update-from-cart',
+      type:"GET",
+      data:{
+        pid: name,
+        qty: value,
+      },
+      success: function() {
+        alert("Cap nhat thanh cong!");
+        }
+    });
+  }
+
+</script>
+{%endblock script%}  

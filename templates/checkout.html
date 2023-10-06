@@ -1,0 +1,113 @@
+{% extends "index.html" %}
+{%load static%}
+{%block body%}
+		<!-- BREADCRUMB -->
+		<div id="breadcrumb" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<h3 class="breadcrumb-header">Checkout</h3>
+						<ul class="breadcrumb-tree">
+							<li><a href="#">Home</a></li>
+							<li class="active">Checkout</li>
+						</ul>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /BREADCRUMB -->
+
+		<!-- SECTION -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+
+					<div class="col-md-7">
+						<!-- Billing Details -->
+						<div class="billing-details">
+							<div class="section-title">
+								<h3 class="title">Billing address</h3>
+							</div>
+							<div class="form-group">
+								<input class="input" type="text" name="first-name" placeholder="{{request.user.first_name}}">
+							</div>
+							<div class="form-group">
+								<input class="input" type="text" name="last-name" placeholder="{{request.user.last_name}}">
+							</div>
+							<div class="form-group">
+								<input class="input" type="email" name="email" placeholder="{{request.user.email}}">
+							</div>
+							<div class="form-group">
+								<input class="input" type="text" name="address" placeholder="{{address.address}}">
+							</div>
+							<div class="form-group">
+								<input class="input" type="tel" name="tel" placeholder="{{address.phone}}">
+							</div>
+							<button class="primary-btn" id="updateProfile" >Update Address</button>
+						</div>
+						<!-- /Billing Details -->
+
+					
+					</div>
+
+					<!-- Order Details -->
+					<div class="col-md-5 order-details">
+						<div class="section-title text-center">
+							<h3 class="title">Your Order</h3>
+						</div>
+						<div class="order-summary">
+							<div class="order-col">
+								<div><strong>PRODUCT</strong></div>
+								<div><strong>TOTAL</strong></div>
+							</div>
+							
+							<div class="order-products">
+								{%for product in products%}
+									<div class="order-col">
+										<div>{{product.qty}}x {{product.product.title}}</div>
+										<div>{{product.price}}</div>
+									</div>
+								{%endfor%}
+							</div>
+							<div class="order-col">
+								<div>Shiping</div>
+								<div><strong>FREE</strong></div>
+							</div>
+							<div class="order-col">
+								<div><strong>TOTAL</strong></div>
+								<div><strong class="order-total">{{price}}</strong></div>
+							</div>
+						</div>
+						<div class="payment-method">
+							<div class="input-radio">
+								<input type="radio" name="payment" id="paypal">
+								<label for="paypal">
+									<span></span>
+									{{form.render}}
+								</label>
+							</div>
+							<div class="input-radio">
+								<input type="radio" name="payment" id="momo">
+								<label for="momo">
+									<span></span>
+									Momo
+								</label>
+							</div>
+						</div>
+						
+						<a href="{%url 'order'%}" class="primary-btn order-submit">Place order with COD</a>
+					</div>
+					<!-- /Order Details -->
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /SECTION -->
+{%endblock body%}
