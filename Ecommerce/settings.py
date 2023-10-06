@@ -132,7 +132,7 @@ AUTH_USER_MODEL = "userauth.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 PAYPAL_RECEIVER_EMAIL = "thkyanhlxag@gmail.com"
 PAYPAL_TEST = True
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "static"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 if not DEBUG:
     DATABASES = {
