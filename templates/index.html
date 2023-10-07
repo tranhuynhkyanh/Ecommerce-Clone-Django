@@ -50,6 +50,8 @@
 					</ul>
 					<ul class="header-links pull-right">
 						{%if request.user%}
+							<li><a href="{% url 'userauth:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
+						{%elif request.user.is_authenticated%}
 							<li><a href="{% url 'userauth:profile' %}"><i class="fa fa-user-o"></i> Profile</a></li>
 						{%else%}
 							<li><a href="{% url 'userauth:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
