@@ -21,7 +21,7 @@ def index(request):
 
 
                     ### -------------------------       Url: /store  ----------------------- ###
-@login_required
+
 def StoreView(request):
     products = Product.objects.all()
     category = Category.objects.all()
@@ -34,7 +34,7 @@ def StoreView(request):
     }
     return render(request,'store.html',context)
 
-@login_required
+
 def CategoryView(request,cid):
     category = get_object_or_404(Category,cid=cid)
     products = Product.objects.filter(category=category).all()
@@ -45,7 +45,7 @@ def CategoryView(request,cid):
     }
 
     return render(request,'store.html',context)
-@login_required
+
 def ProductView(request,pid):
     product = get_object_or_404(Product,pid=pid)
     cate = product.category
@@ -69,7 +69,7 @@ def ProductView(request,pid):
     return render(request,'product.html',context)
 
 
-@login_required
+
 def VendorView(request,vid):
     vendor = get_object_or_404(Vendor,vid=vid)
     if request.user != vendor.user:
