@@ -6,6 +6,7 @@ from django.conf import settings
 from core.models import Vendor,Product,Order,OrderItems,Address
 from .models import Follow,User
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def login_view(request):
@@ -52,10 +53,11 @@ def register_view(request):
         'form': form
     }
     return render(request,"userauth/sign-up.html",context)
+@login_required
 def logout_view(request):   
     logout(request)
     return redirect('userauth:login')
-
+@login_required
 def follow(request,vid):
     user = request.user
     vendor = get_object_or_404(Vendor,vid=vid)
@@ -66,7 +68,7 @@ def follow(request,vid):
         follow = Follow.objects.create(follower=user,following=vendor.user)
         
     return redirect('vendor-detail',vendor.vid)
-
+@login_required
 def profile_view(request):
     try :
         vendor = Vendor.objects.get(user=request.user)
@@ -90,7 +92,7 @@ def profile_view(request):
         'address': address
     }
     return render(request,"userauth/profile.html",context)
-
+@login_required
 def edit_profile(request):
     profile = User.objects.get(id=request.user.id)
     print(profile.first_name,profile.last_name,profile.image)
