@@ -49,12 +49,12 @@
 						<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
 					</ul>
 					<ul class="header-links pull-right">
-						{%if request.user%}
-							<li><a href="{% url 'userauth:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
-						{%elif request.user.is_authenticated%}
+						{%if request.user.is_authenticated%}
 							<li><a href="{% url 'userauth:profile' %}"><i class="fa fa-user-o"></i> Profile</a></li>
-						{%else%}
+						{%elif request.user%}
 							<li><a href="{% url 'userauth:login' %}"><i class="fa fa-user-o"></i> Login</a></li>
+						{%else%}
+							<li><a href="{% url 'userauth:logout' %}"><i class="fa fa-user-o"></i> Logout</a></li>
 						{%endif%}
 					</ul>
 				</div>
