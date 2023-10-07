@@ -118,7 +118,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 
@@ -132,7 +131,12 @@ AUTH_USER_MODEL = "userauth.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 PAYPAL_RECEIVER_EMAIL = "thkyanhlxag@gmail.com"
 PAYPAL_TEST = True
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MANIFEST_STRICT = False
 if not DEBUG:
     DATABASES = {
 	"default": dj_database_url.parse(os.environ.get("postgres://kyanhstore_user:HJoLoUBRT4wPok7GmGVDmB5U1o8kvHd7@dpg-ckg156oeksbs73dnnrvg-a.oregon-postgres.render.com/kyanhstore"))
