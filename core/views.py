@@ -54,7 +54,10 @@ def ProductView(request,pid):
     vendor = Vendor.objects.filter(product=product).first()
     reviews = ProductReview.objects.filter(product=product).all()
     rating = reviews.aggregate(Avg('rating'))
+    
     ratings = get_rating(reviews)
+    percentage = ProductReview.get_percentage(reviews)
+
     context = {
         'product': product,
         'imgs'  : product_images,
@@ -64,7 +67,8 @@ def ProductView(request,pid):
         'reviews': reviews,
         'rating': rating,
         'range' : range(5),
-        'ratings': ratings
+        'ratings': ratings,
+        'percentage': percentage
     }
     return render(request,'product.html',context)
 

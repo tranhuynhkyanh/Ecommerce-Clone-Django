@@ -190,7 +190,12 @@ class ProductReview(models.Model):
         return self.product.title
     def get_rating(self):
         return self.rating
-
+    def get_percentage(self):
+        percentage = [0,0,0,0,0]
+        for i in range(0,5):
+            star_reviews = self.filter(rating=i+1)
+            percentage[i] = float(star_reviews.count() / self.all().count()) * 100
+        return percentage
 class Wishlist(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True)
