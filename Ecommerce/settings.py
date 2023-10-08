@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-g=jzhv5zv8nxar2z0jpv#jv-$o*p(+e597*wgkau$gc&7v*m4e')
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ADMIN_ENABLED = False
 ALLOWED_HOSTS = ['*']
 
@@ -177,9 +177,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
 if not DEBUG:
     DATABASES = {
-	"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+	"default": dj_database_url.parse(os.environ.get("postgres://kyanhstore_user:HJoLoUBRT4wPok7GmGVDmB5U1o8kvHd7@dpg-ckg156oeksbs73dnnrvg-a.oregon-postgres.render.com/kyanhstore"))
 }
-    
 else:
     DATABASES = {
     'default': {
