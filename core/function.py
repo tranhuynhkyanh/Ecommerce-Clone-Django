@@ -121,6 +121,7 @@ def search_vendor(request):
 #------------------------------------------------------- Cart ----------------------------------------------------------------#
 @login_required
 def add_to_cart(request):
+    
     qty = request.GET.get('qty')
     pid = request.GET.get('pid')
    # print(qty,pid)
@@ -182,6 +183,9 @@ def order_create(request):
             image = products[0].product.image,
             )
         for product in products:
+            inventory = ProductInventory.get(product=product)
+            inventory.quantity -= product.qty
+            inventory.save()
             OrderItems.objects.create(
                 order = order,
                 item = product.product,

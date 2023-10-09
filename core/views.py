@@ -54,7 +54,7 @@ def ProductView(request,pid):
     vendor = Vendor.objects.filter(product=product).first()
     reviews = ProductReview.objects.filter(product=product).all()
     rating = reviews.aggregate(Avg('rating'))
-    
+    inventory = ProductInventory.objects.get(product=product)
     ratings = get_rating(reviews)
     percentage = ProductReview.get_percentage(reviews)
 
@@ -68,7 +68,8 @@ def ProductView(request,pid):
         'rating': rating,
         'range' : range(5),
         'ratings': ratings,
-        'percentage': percentage
+        'percentage': percentage,
+        'inventory' : inventory
     }
     return render(request,'product.html',context)
 
@@ -152,7 +153,6 @@ def OrderDetailView(request,invoice):
     context = {
         "order":order,
         "order_items":order_items,
-        'form':form
     }
     return render(request,"payment-completed.html",context)
 @login_required
