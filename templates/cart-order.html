@@ -54,7 +54,11 @@
   
           <div class="card">
             <div class="card-body">
-              <a href="{%url 'checkout' %}" type="button" class="btn btn-warning btn-block btn-lg">Proceed to Pay</a>
+              {%if cartItems%}
+                <a href="{%url 'checkout' %}" type="button" class="btn btn-warning btn-block btn-lg">Proceed to Pay</a>
+              {%else%}
+                <a href="{%url 'index' %}" type="button" class="btn btn-warning btn-block btn-lg">Shopping more to order</a>
+              {%endif%}
             </div>
           </div>
   

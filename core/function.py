@@ -183,9 +183,11 @@ def order_create(request):
             image = products[0].product.image,
             )
         for product in products:
-            inventory = ProductInventory.get(product=product)
+            inventory = ProductInventory.objects.get(product=product.product)
             inventory.quantity -= product.qty
             inventory.save()
+            if inventory == 0:
+                product.product.in_stock= False
             OrderItems.objects.create(
                 order = order,
                 item = product.product,

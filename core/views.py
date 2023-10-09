@@ -55,6 +55,9 @@ def ProductView(request,pid):
     reviews = ProductReview.objects.filter(product=product).all()
     rating = reviews.aggregate(Avg('rating'))
     inventory = ProductInventory.objects.get(product=product)
+    if inventory.quantity == 0:
+        product.in_stock = False
+    product.save()
     ratings = get_rating(reviews)
     percentage = ProductReview.get_percentage(reviews)
 

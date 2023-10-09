@@ -98,12 +98,17 @@
 							</div>
 							<div>
 								<h3 class="product-price">{{product.price}} <del class="product-old-price">{{product.old_price}}</del></h3>
-								<span class="product-available">In Stock ({{inventory.quantity}})</span>
+								{%if inventory.quantity > 0%}
+									<span class="product-available">In Stock ({{inventory.quantity}})</span>
+								{%else%}
+									<span class="product-available">Out of Stock</span>
+								{%endif%}
 							</div>
 							<p>{{product.description}}</p>
 
 
 							<div class="add-to-cart">
+								{%if inventory.quantity > 0%}
 								<div class="qty-label">
 									Qty
 									<div class="input-number">
@@ -112,7 +117,9 @@
 										<span class="qty-down">-</span>
 									</div>
 								</div>
-								<button id = "add-to-cart" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+								
+									<button id = "add-to-cart" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+								{%endif%}
 								<div id="mess" style="h3" class="alert alert-{{ message.level_tag }}">
 									{{ message }}
 								</div>
@@ -120,7 +127,6 @@
 
 							<ul class="product-btns">
 								<li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
-								<li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>
 							</ul>
 
 							<ul class="product-links">
@@ -373,8 +379,13 @@
 									</div>
 								</div>
 								<div class="add-to-cart">
-									<button class="add-to-cart-btn" value="{{product_related.pid}}" onclick= "addSingleFunction(this.value)">
-										<i class="fa fa-shopping-cart"></i> add to cart</button>
+									{%if product.in_stock%}
+										<button class="add-to-cart-btn" value="{{product_related.pid}}" onclick= "addSingleFunction(this.value)">
+											<i class="fa fa-shopping-cart"></i> add to cart</button>
+									{%else%}
+										<button class="primary-btn" >
+											<i class="fa fa-shopping-cart"></i> Out of Stock</button>
+									{%endif%}
 								</div>
 							</div>
 						</div>
