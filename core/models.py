@@ -143,7 +143,7 @@ class Address(models.Model):
     address = models.CharField(max_length=100,null=True)
     phone = models.BigIntegerField(null=True)
     status = models.BooleanField(default=False)
-    
+   # location = models.PointField()
     class Meta:
         verbose_name_plural = "Address"
 

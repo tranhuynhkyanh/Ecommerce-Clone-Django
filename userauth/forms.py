@@ -26,6 +26,7 @@ class UserProfileForm(forms.ModelForm):
 class AddressEditForm(forms.ModelForm):
     address = forms.CharField(required=True,widget=forms.TextInput(attrs={'class':'input','placeholder': 'Address'}))
     phone = forms.CharField(required=True,widget=forms.TextInput(attrs={'class':'input','placeholder': 'Phone number'}))
+   # location = forms.PointField(required=False)
     class Meta:
         model = Address
         fields = ['address','phone'] 

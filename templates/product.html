@@ -190,13 +190,13 @@
 											<div id="rating">
 												<div class="rating-avg">
 													<span>{{rating.value}}</span>
-													<div class="rating-stars">
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star-o"></i>
-													</div>
+													{% for star in range %}
+														{% if star < rating.value %}
+															<i class="fa fa-star"></i>
+														{% else %}
+															<i class="fa fa-star-o empty"></i>
+														{% endif %}
+												{% endfor %}
 												</div>
 												<ul class="rating">
 													<li>

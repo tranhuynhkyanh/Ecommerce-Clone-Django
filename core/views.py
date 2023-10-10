@@ -59,8 +59,10 @@ def ProductView(request,pid):
         product.in_stock = False
     product.save()
     ratings = get_rating(reviews)
-    percentage = ProductReview.get_percentage(reviews)
-
+    try:
+        percentage = ProductReview.get_percentage(reviews)
+    except:
+        percentage = {}
     context = {
         'product': product,
         'imgs'  : product_images,

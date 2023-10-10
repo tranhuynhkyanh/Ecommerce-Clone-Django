@@ -8,6 +8,8 @@ from .models import Follow,User
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
+def handle_not_found(request, exception):
+    return render(request, "404.html")
 # Create your views here.
 def login_view(request):
     if request.user.is_authenticated:
@@ -144,3 +146,6 @@ def update_product_vendor(request):
     pass
 def register_vendor(request):
     pass
+
+def MessageView(request):
+    return render(request,"chat.html")
