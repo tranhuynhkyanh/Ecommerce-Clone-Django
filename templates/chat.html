@@ -310,17 +310,17 @@
                             {%if message.sender == request.user%}
                             <li class="clearfix">
                                 <div class="message-data text-right">
-                                    <span class="message-data-time">10:10 AM, Today</span>
+                                    <span class="message-data-time">{{message.timestamp}}</span>
                                     <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
                                 </div>
-                                <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
+                                <div class="message other-message float-right"> {{message.message}} </div>
                             </li>
                             {%else%}
                             <li class="clearfix">
                                 <div class="message-data">
-                                    <span class="message-data-time">10:12 AM, Today</span>
+                                    <span class="message-data-time">{{message.timestamp}}</span>
                                 </div>
-                                <div class="message my-message">Are we meeting today?</div>                                    
+                                <div class="message my-message">{{message.message}}</div>                                    
                             </li>          
                             {%endif%}                  
                         {%endfor%}

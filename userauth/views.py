@@ -81,11 +81,12 @@ def profile_view(request):
         is_vendor = False
     try:
         order = Order.objects.filter(user=request.user).all()
+        
     except:
         order = {}
         item = {}
     user = User.objects.get(id = request.user.id)
-    address = Address.objects.get(user=user)
+    address = Address.objects.filter(user=user)
     context = {
         'is_vendor' : is_vendor,
         'products' : products,

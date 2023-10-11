@@ -18,18 +18,22 @@ socket.onerror = function(e){
 
 socket.onmessage = function(e){
     const data = JSON.parse(e.data);
+    const date = Date.now()
     if(data.username == message_username){
-        document.querySelector('#chat-body').innerHTML += `<tr>
-                                                                <td>
-                                                                <p class="bg-success p-2 mt-2 mr-5 shadow-sm text-white float-right rounded">${data.message}</p>
-                                                                </td>
-                                                            </tr>`
+        document.querySelector('#chat-body').innerHTML += `  <li class="clearfix">
+        <div class="message-data text-right">
+            <span class="message-data-time">{{date}}</span>
+            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+        </div>
+        <div class="message other-message float-right"> {{data.message}} </div>
+    </li>`
     }else{
-        document.querySelector('#chat-body').innerHTML += `<tr>
-                                                                <td>
-                                                                <p class="bg-primary p-2 mt-2 mr-5 shadow-sm text-white float-left rounded">${data.message}</p>
-                                                                </td>
-                                                            </tr>`
+        document.querySelector('#chat-body').innerHTML += `  <li class="clearfix">
+        <div class="message-data">
+            <span class="message-data-time">{{date}}</span>
+        </div>
+        <div class="message my-message">{{data.message}}</div>                                    
+    </li>`
     }
 }
 
