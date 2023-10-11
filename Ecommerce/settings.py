@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,6 +46,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
+    "channels",
+    "chat"
+    
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -110,7 +114,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "Ecommerce.wsgi.application"
+#WSGI_APPLICATION = "Ecommerce.wsgi.application"
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
 
 # Database
@@ -175,6 +179,19 @@ PAYPAL_TEST = True
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
+
+ASGI_APPLICATION = 'Ecommerce.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+
 if not DEBUG:
     DATABASES = {
 	"default": dj_database_url.parse(os.environ.get("postgres://kyanhstore_user:HJoLoUBRT4wPok7GmGVDmB5U1o8kvHd7@dpg-ckg156oeksbs73dnnrvg-a.oregon-postgres.render.com/kyanhstore"))

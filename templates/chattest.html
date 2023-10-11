@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat App</title>
+</head>
+<body>
+    <input type="text" id="message" placeholder="Nhập tin nhắn">
+    <button id="send">Gửi</button>
+
+    <div id="messages"></div>
+
+    <script>
+        const messageInput = document.querySelector('#message');
+        const sendButton = document.querySelector('#send');
+        const messagesContainer = document.querySelector('#messages');
+
+        const channel = new Channel({
+            channel_layer: window.channel_layer,
+            channel_name: window.channel_name,
+        });
+
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value;
+
+            channel.send({
+                text: message,
+            });
+
+            messageInput.value = '';
+        });
+
+        channel.on('message', (data) => {
+            const message = data.text;
+
+            messagesContainer.innerHTML += `
+                <div class="message">
+                    <strong>${data.user.username}</strong>: ${message}
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
