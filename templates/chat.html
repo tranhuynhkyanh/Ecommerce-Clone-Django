@@ -304,8 +304,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="chat-history" id="">
-                    <ul class="m-b-0" id="chat-body">
+                <div class="chat-history"  >
+                    <ul class="m-b-0" id="chat-body" style="height: 450px; overflow-y: scroll; overflow-x: hidden;">
                         {%for message in messages%}
                             {%if message.sender == request.user%}
                             <li class="clearfix">
@@ -345,5 +345,9 @@
 
 {%endblock body%}
 {%block script%}
+
 <script src="{% static 'js/chat.js' %}"></script>
+<script>
+    $("#chat-body").animate({ scrollTop: 20000000 }, "slow");
+</script>
 {%endblock script%}

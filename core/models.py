@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+
 from userauth.models import User
 from shortuuid.django_fields import ShortUUIDField
 from django.utils.html import mark_safe
@@ -57,6 +58,8 @@ class Vendor(models.Model):
     days_return = models.CharField(max_length=100,default="100")
     class Meta:
         verbose_name_plural = "Vendors"
+    def __str__(self):
+        return self.title
     def vendor_image(self):
         return mark_safe('<img src="%s width="50" height="50" />' % (self.image.url))        
              # -------------------------     Category --------------------------------#
@@ -82,10 +85,10 @@ class Product(models.Model):
     pid =  ShortUUIDField(unique = True,length = 10,max_length=20,prefix="pro",alphabet="abcdefgh123456")
     title = models.CharField(max_length=100,default="MSI Laptop")
     category = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,db_constraint=False)
-    image = models.ImageField(upload_to=user_directory_path,default="MSILaptop.jpg")
+    image = models.ImageField(upload_to=user_directory_path,default="MSILaptop.jpg",null=True)
     description = models.CharField(blank=True,default="This is the product",max_length=300)
-    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=1000)
-    old_price = models.DecimalField(max_digits=999999999,decimal_places=0,default=2000)
+    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=1000,null=True)
+    old_price = models.DecimalField(max_digits=999999999,decimal_places=0,default=2000,null=True)
     specifications = models.TextField(null=True,blank=True)
     tags = models.ManyToManyField(Tag)
     product_status = models.TextField(choices=STATUS,max_length=10,default="Draft",null=True)
@@ -95,6 +98,7 @@ class Product(models.Model):
     digital = models.BooleanField(default=True)
     sku = ShortUUIDField(unique = True,length = 4,max_length=20,prefix="sku",alphabet="1234567890")
     vendor = models.ForeignKey(Vendor,on_delete=models.CASCADE,null=True)
+    image_url = models.URLField(null=True)
     autocomplete_fields = ["title"]
     class Meta:
         verbose_name_plural = "Products"

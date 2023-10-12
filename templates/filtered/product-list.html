@@ -3,7 +3,11 @@
 <div class="col-md-4 col-xs-6">
     <div class="product">
         <div class="product-img">
-            <img width = "200" height="200"src="{{product.image.url}}" alt="{{product.get_absolute_url}}">
+            {%if product.image%}
+                <img width = "200" height="200" src="{{product.image.url}}" alt="">
+            {%else%}
+                <img width = "200" height="200" src="{{product.image_url}}" alt="">
+            {%endif%}
             <div class="product-label">
                 <span class="sale">-30%</span>
                 <span class="new">NEW</span>
@@ -12,7 +16,11 @@
         <div class="product-body">
             <p class="product-category">{{product.category}}</p>
             <h1 class="product-name"><a href="{{product.get_absolute_url}}">{{product.title}}</a></h1>
-            <h4 class="product-price">{{product.price}}<del class="product-old-price">{{product.old_price}}</del></h4>
+            {%if product.price %}
+                <h4 class="product-price">{{product.price}} <del class="product-old-price">{{product.old_price}}</del></h4>
+            {%else%}
+                <h4 class="product-price">{{product.old_price}}</h4>
+            {%endif%}
             <div class="product-rating">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>

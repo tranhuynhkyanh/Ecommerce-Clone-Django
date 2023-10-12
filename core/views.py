@@ -7,15 +7,19 @@ from django.http import JsonResponse
 from userauth.models import Follow
 from django.contrib import messages
 from django.db.models import Avg
-from .function import get_rating
+from .function import get_rating,top_selling
 from paypal.standard.forms import PayPalPaymentsForm
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def index(request):
     new_product = Product.objects.all().order_by('-id')
+    category = Category.objects.all()
+    tops = top_selling()
     context = {
-        'new_products' : new_product
+        'new_products' : new_product,
+        'categories' : category,
+        'tops' : tops
     }
     return render(request,'index.html',context)
 
@@ -126,7 +130,10 @@ def CheckoutView(request):
         address = Address.objects.get(user=request.user)
         total_price = 0
         for product in products:
-            total_price += product.price
+            if product.price != None:
+                total_price += product.price
+            else:
+                total_price += product.old_price
         host = request.get_host()
         paypal_dict = {
         "business": "thkyanhlxag@gmail.com",

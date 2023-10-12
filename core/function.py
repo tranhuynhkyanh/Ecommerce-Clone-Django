@@ -1,7 +1,8 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.template.loader import render_to_string
 from .models import Product,ProductImages,Vendor,Category,Order,OrderItems,Cart,ProductInventory,ProductCart,Address,ProductReview,Wishlist
-from django.db.models import Q
+from django.db.models import Q,Count, Window
+
 from django.http import JsonResponse
 from userauth.models import Follow
 from django.contrib import messages
@@ -41,6 +42,14 @@ def filter_product(request):
     data = render_to_string("filtered/product-list.html",{'products':products})
     return JsonResponse({'data':data})
 
+def top_selling():
+    order_items = OrderItems.objects.annotate(
+        quantity_ordered=Count('quantity'),
+        rank=Window(expression=Count('quantity'), order_by=Count('quantity').desc())
+    ).order_by('-rank')
+
+    return order_items
+
 @login_required
 def check_product(request):
     pid =  request.GET.get("pid") 
@@ -53,12 +62,15 @@ def check_product(request):
         messages = "Số lượng vượt quá kho hàng !!! Vui lòng chọn ít hơn " + str(qty_product+1)
     else:
         messages = ""
-    price = product.price * int(qty)
+    if product.price != None:
+        price = int(qty) * int(product.price)
+    else:
+        price = int(qty) * int(product.old_price)
     return JsonResponse({'messages':messages,
                          'price':price})
 @login_required
 def add_to_wishlist(request,pid):
-    
+ 
     return
 
 def get_rating(reviews):
@@ -82,8 +94,8 @@ def search(request):
             {
                 "id": product.pid,
                 "title": product.title,
-                "image": product.image.url,
-                "price":product.price,
+                "image": product.image.url if product.image else product.image_url,
+                "price":product.price if product.price else product.old_price,
                 "url":product.get_absolute_url(),
             }
             for product in products
@@ -107,10 +119,10 @@ def search_vendor(request):
             {
                 "id": product.pid,
                 "title": product.title,
-                "image": product.image.url,
-                "price":product.price,
+                "image": product.image.url if product.image else product.image_url,
+                "price":product.price if product.price else product.old_price,
                 "url":product.get_absolute_url(),
-            }
+            } 
             for product in products
         ]
     }
@@ -126,7 +138,10 @@ def add_to_cart(request):
     pid = request.GET.get('pid')
    # print(qty,pid)
     product = get_object_or_404(Product,pid=pid)
-    price = int(qty) * int(product.price)
+    if product.price != None:
+        price = int(qty) * int(product.price)
+    else:
+        price = int(qty) * int(product.old_price)
     cart = Cart.objects.filter(user=request.user).first()
     print(cart)
     if not cart :
@@ -155,7 +170,10 @@ def update_from_cart(request):
     qty = request.GET.get('qty')
     pid = request.GET.get('pid')
     product = get_object_or_404(Product,pid=pid)
-    price = int(qty) * int(product.price)
+    if product.price != None:
+        price = int(qty) * int(product.price)
+    else:
+        price = int(qty) * int(product.old_price)
     is_add = ProductCart.objects.filter(product=product).first()
     is_add.qty = qty
     is_add.price = price
@@ -188,16 +206,20 @@ def order_create(request):
             inventory.save()
             if inventory == 0:
                 product.product.in_stock= False
+            if product.price != None:
+                price = product.price
+            else:
+                price = product.old_price
             OrderItems.objects.create(
                 order = order,
                 item = product.product,
                 image = product.product.image,
                 quantity = product.qty,
-                price = (product.price/product.qty),
-                total = product.price
+                price = (price/product.qty),
+                total = price
             )
             ProductCart.objects.filter(product=product.product,user=request.user).first().delete()
-            total_price += product.price
+            total_price += price
         
         order.price = total_price
         order.save()
