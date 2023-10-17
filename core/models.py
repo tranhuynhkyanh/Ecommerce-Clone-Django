@@ -87,8 +87,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,db_constraint=False)
     image = models.ImageField(upload_to=user_directory_path,default="MSILaptop.jpg",null=True)
     description = models.CharField(blank=True,default="This is the product",max_length=300)
-    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=1000,null=True)
-    old_price = models.DecimalField(max_digits=999999999,decimal_places=0,default=2000,null=True)
+    price = models.PositiveBigIntegerField(default=2000,null=True)
+    old_price = models.PositiveBigIntegerField(default=3000,null=True)
     specifications = models.TextField(null=True,blank=True)
     tags = models.ManyToManyField(Tag)
     product_status = models.TextField(choices=STATUS,max_length=10,default="Draft",null=True)
@@ -135,7 +135,7 @@ class ProductImages(models.Model):
 class ProductCart(models.Model):
     product= models.ForeignKey(Product,on_delete=models.CASCADE)
     qty = models.IntegerField(default=1)
-    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=2000)
+    price = models.PositiveBigIntegerField(default=2000)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
 class Cart(models.Model):
@@ -155,7 +155,7 @@ class Address(models.Model):
 class Order(models.Model):
     invoice_no = models.CharField(max_length=200)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=2000)
+    price = models.PositiveBigIntegerField(default=2000)
     paid_status = models.BooleanField(default=False)
     order_date = models.DateTimeField(auto_now_add=True)
     product_status = models.TextField(choices=STATUS_CHOICE,max_length=30)
@@ -169,8 +169,8 @@ class OrderItems(models.Model):
     item = models.ForeignKey(Product,on_delete=models.CASCADE)
     image = models.ImageField(max_length=200)
     quantity = models.IntegerField(default=1)
-    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=1000)
-    total = models.DecimalField(max_digits=999999999,decimal_places=0,default=1000)
+    price = models.PositiveBigIntegerField(default=2000)
+    total = models.PositiveBigIntegerField(default=2000)
     
     class Meta:
         verbose_name_plural = "Order Items"
