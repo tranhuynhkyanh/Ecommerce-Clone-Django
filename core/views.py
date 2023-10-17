@@ -76,23 +76,38 @@ def ProductView(request,pid):
     product_related = Product.objects.filter(category=cate).exclude(pid=pid).all()
     vendor = Vendor.objects.filter(product=product).first()
     reviews = ProductReview.objects.filter(product=product).all()
+    paginator = Paginator(reviews,3)
+    page = request.GET.get('page')
+    
+    try:
+        paginated_products = paginator.page(page)
+    except PageNotAnInteger:
+        # If the page parameter is not an integer, show the first page
+        paginated_products = paginator.page(1)
+
+    except EmptyPage:
+        # If the page is out of range, show the last page
+        paginated_products = paginator.page(paginator.num_pages)
+
     rating = reviews.aggregate(Avg('rating'))
     inventory = ProductInventory.objects.get(product=product)
     if inventory.quantity == 0:
         product.in_stock = False
     product.save()
     ratings = get_rating(reviews)
+    sold = OrderItems.objects.filter(item=product).values('quantity').aggregate(Sum('quantity'))['quantity__sum']
     try:
         percentage = ProductReview.get_percentage(reviews)
     except:
         percentage = {}
     context = {
+        'sold':sold if sold else 0,
         'product': product,
         'imgs'  : product_images,
         'vendor' : vendor,
         'products_related' : product_related,
         'cate' : cate,
-        'reviews': reviews,
+        'reviews': paginated_products,
         'rating': rating,
         'range' : range(5),
         'ratings': ratings,
@@ -106,7 +121,8 @@ def ProductView(request,pid):
 def VendorView(request,vid):
     vendor = get_object_or_404(Vendor,vid=vid)
     if request.user != vendor.user:
-        review_vendor = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=vendor)).all().aggregate(Avg('rating'))
+        review_vendor = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=vendor)).aggregate(Avg('rating'))
+        total_review = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=vendor)).all().count()
         total_sold = OrderItems.objects.filter(item__in=Product.objects.filter(vendor=vendor)).values('quantity').aggregate(Sum('quantity'))['quantity__sum']
         products = Product.objects.filter(vendor=vendor).all()
         paginator = Paginator(products, 9)
@@ -131,6 +147,7 @@ def VendorView(request,vid):
         except:
             is_followed = False
         context = {
+            'total_review':total_review if total_review else 0,
             'vendor' : vendor,
             'products' : paginated_products,
             'is_followed': is_followed,
@@ -172,17 +189,6 @@ def CheckoutView(request):
                 total_price += product.price
             else:
                 total_price += product.old_price
-        host = request.get_host()
-        paypal_dict = {
-        "business": "thkyanhlxag@gmail.com",
-        "amount": 1,
-        "item_name": "Testing",
-        "invoice": "",
-        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-        "return": request.build_absolute_uri(reverse('payment-completed')),
-        "cancel_return": request.build_absolute_uri(reverse('index')),
-         }
-        form = PayPalPaymentsForm(initial=paypal_dict)
     except:
         products = {}
         total_price = 0
@@ -190,7 +196,6 @@ def CheckoutView(request):
         'products' : products,
         'price': total_price,
         'address':address,
-        'form' : form
     }
     return render (request,"checkout.html",context)
 

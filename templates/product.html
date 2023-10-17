@@ -103,7 +103,7 @@
 										{%endif%}
 									{%endfor%}
 								</div>
-								<a class="review-link">{{reviews.count}} Review(s)</a>
+								<a class="review-link">{{reviews.paginator.count}} Review(s)</a>
 							</div>
 							<div>
 								{%if product.price %}
@@ -139,7 +139,8 @@
 							</div>
 
 							<ul class="product-btns">
-								<li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
+								<button class="primary-btn" value="{{product.pid}}" onclick= "addWishList(this.value)" ><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+														
 							</ul>
 
 							<ul class="product-links">
@@ -158,7 +159,7 @@
 								<li><a href="#"><i class="fa fa-envelope"></i></a></li>
 							</ul>
 							<hr>
-							<a class="primary-btn" id = "name_product" value="{{product.pid}}">Sold: 10</a>
+							<a class="primary-btn" id = "name_product" value="{{product.pid}}">Sold: {{sold}}</a>
 						</div>
 					</div>
 					<!-- /Product details -->
@@ -170,7 +171,7 @@
 							<ul class="tab-nav">
 								<li class="active"><a data-toggle="tab" href="#tab1">{{product.decription}}</a></li>
 								<li><a data-toggle="tab" href="#tab2">Details</a></li>
-								<li><a data-toggle="tab" href="#tab3">Reviews (3)</a></li>
+								<li><a data-toggle="tab" href="#tab3">Reviews ({{reviews.paginator.count}})</a></li>
 							</ul>
 							<!-- /product tab nav -->
 
@@ -285,6 +286,7 @@
 
 										<!-- Reviews -->
 										<div class="col-md-6">
+											
 											{%for review in reviews%}
 												<div id="reviews">
 													<ul class="reviews">
@@ -311,11 +313,22 @@
 														
 													</ul>
 													<ul class="reviews-pagination">
-														<li class="active">1</li>
-														<li><a href="#">2</a></li>
-														<li><a href="#">3</a></li>
-														<li><a href="#">4</a></li>
-														<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+														{% if reviews.has_previous %}
+															<li><a href="?page={{ reviews.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+															<li><a href="?page={{ reviews.previous_page_number }}">{{ reviews.previous_page_number }}</a></li>
+														{% endif %}
+						
+														{% if reviews.number != reviews.paginator.num_pages  %}
+															<li><a href="?page={{ reviews.number }}">{{ reviews.number }}</a></li>
+														{%endif%}
+														{%if reviews.number == reviews.paginator.num_pages%}
+															<li class="active"><a href="?page={{ reviews.paginator.num_pages }}">{{ reviews.paginator.num_pages }}</a></li>
+														{%else%}
+															<li ><a href="?page={{ reviews.paginator.num_pages }}">{{ reviews.paginator.num_pages }}</a></li>
+														{% endif %}
+														{% if reviews.has_next %}
+															<li><a href="?page={{ reviews.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+														{% endif %}
 													</ul>
 												</div>
 											{%endfor%}
@@ -405,8 +418,7 @@
 									<div class="product-rating">
 									</div>
 									<div class="product-btns">
-										<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-										<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+										<button class="add-to-wishlist" value="{{product_related.pid}}" onclick= "addWishList(this.value)"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
 									</div>
 								</div>
 								<div class="add-to-cart">
