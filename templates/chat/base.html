@@ -278,11 +278,6 @@
                             <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
                             <div class="about">
                                 <div class="name">{{user.first_name}} {{user.last_name}}</div>
-                                {%if not user.online %}
-                                    <div class="status"> <i class="fa fa-circle offline"></i> {% if user.last_seen %}{{ user.last_seen|timesince }}{% else %}awhile{% endif %} ago</div>
-                                {%else%}
-                                 <div class="status"> <i class="fa fa-circle online"></div>
-                                {%endif%}
                             </div>
                         </li></a>
                     {%endfor%}
