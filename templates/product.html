@@ -310,28 +310,27 @@
 																<p>{{review.review}}</p>
 															</div>
 														</li>
-														
-													</ul>
-													<ul class="reviews-pagination">
-														{% if reviews.has_previous %}
-															<li><a href="?page={{ reviews.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
-															<li><a href="?page={{ reviews.previous_page_number }}">{{ reviews.previous_page_number }}</a></li>
-														{% endif %}
-						
-														{% if reviews.number != reviews.paginator.num_pages  %}
-															<li><a href="?page={{ reviews.number }}">{{ reviews.number }}</a></li>
-														{%endif%}
-														{%if reviews.number == reviews.paginator.num_pages%}
-															<li class="active"><a href="?page={{ reviews.paginator.num_pages }}">{{ reviews.paginator.num_pages }}</a></li>
-														{%else%}
-															<li ><a href="?page={{ reviews.paginator.num_pages }}">{{ reviews.paginator.num_pages }}</a></li>
-														{% endif %}
-														{% if reviews.has_next %}
-															<li><a href="?page={{ reviews.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
-														{% endif %}
 													</ul>
 												</div>
 											{%endfor%}
+											<ul class="reviews-pagination">
+												{% if reviews.has_previous %}
+													<li><a href="?page={{ reviews.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+													<li><a href="?page={{ reviews.previous_page_number }}">{{ reviews.previous_page_number }}</a></li>
+												{% endif %}
+				
+												{% if reviews.number != reviews.paginator.num_pages  %}
+													<li><a href="?page={{ reviews.number }}">{{ reviews.number }}</a></li>
+												{%endif%}
+												{%if reviews.number == reviews.paginator.num_pages%}
+													<li class="active"><a href="?page={{ reviews.paginator.num_pages }}">{{ reviews.paginator.num_pages }}</a></li>
+												{%else%}
+													<li ><a href="?page={{ reviews.paginator.num_pages }}">{{ reviews.paginator.num_pages }}</a></li>
+												{% endif %}
+												{% if reviews.has_next %}
+													<li><a href="?page={{ reviews.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+												{% endif %}
+											</ul>
 										</div>
 										<!-- /Reviews -->
 
