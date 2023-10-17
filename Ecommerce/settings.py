@@ -199,7 +199,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-g=jzhv5zv8nxar2z0jpv#
 DEBUG = False
 ADMIN_ENABLED = False
 ALLOWED_HOSTS = ['*']
-
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 if DEBUG == False:
     DATABASES = {

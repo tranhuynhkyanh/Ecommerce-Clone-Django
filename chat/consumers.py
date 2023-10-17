@@ -3,8 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from chat.models import ChatModel
 from userauth.models import User
-import os 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Ecommerce.settings")
+
 class PersonalChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         my_id = self.scope['user'].id
