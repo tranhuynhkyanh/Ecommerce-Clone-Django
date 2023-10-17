@@ -135,7 +135,7 @@ class ProductImages(models.Model):
 class ProductCart(models.Model):
     product= models.ForeignKey(Product,on_delete=models.CASCADE)
     qty = models.IntegerField(default=1)
-    price = models.DecimalField(max_digits=9999999999999999,decimal_places=0,default=2000)
+    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=2000)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
 class Cart(models.Model):
@@ -155,7 +155,7 @@ class Address(models.Model):
 class Order(models.Model):
     invoice_no = models.CharField(max_length=200)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=9999999999999999,decimal_places=0,default=2000)
+    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=2000)
     paid_status = models.BooleanField(default=False)
     order_date = models.DateTimeField(auto_now_add=True)
     product_status = models.TextField(choices=STATUS_CHOICE,max_length=30)
@@ -169,8 +169,8 @@ class OrderItems(models.Model):
     item = models.ForeignKey(Product,on_delete=models.CASCADE)
     image = models.ImageField(max_length=200)
     quantity = models.IntegerField(default=1)
-    price = models.DecimalField(max_digits=99999999999999,decimal_places=0,default=1000)
-    total = models.DecimalField(max_digits=99999999999999,decimal_places=0,default=1000)
+    price = models.DecimalField(max_digits=999999999,decimal_places=0,default=1000)
+    total = models.DecimalField(max_digits=999999999,decimal_places=0,default=1000)
     
     class Meta:
         verbose_name_plural = "Order Items"
