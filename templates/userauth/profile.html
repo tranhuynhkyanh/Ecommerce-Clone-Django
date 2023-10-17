@@ -12,7 +12,7 @@
         {%if user.image%}
           <img width="200" height="200" class="img-responsive center-block" src="{{user.image.url}}" alt>
         {%else%}
-          <img width="200" height="200" class="img-responsive center-block" src="https://bootdey.com/img/Content/avatar/avatar6.png" alt>
+          <img width="200" height="200" class="img-responsive center-block" src="{{user.image}}" alt>
         {%endif%}
         {{user.first_name}} {{user.last_name}}
   
@@ -67,9 +67,7 @@
           
           <!-- Profile info -->
           <ul class="user-profile__info">
-            <li>
-              <i class="fa fa-eye"></i> 50 follower
-            </li>
+            
           </ul>
         </div>
         <div class="col-sm-12">
@@ -101,7 +99,9 @@
                     {%for order in orders%}
                       <tr class="js-shop__item">
                         <td>
-                          <img width="50" height="50"class="img-responsive shopping-cart-item__img" src="{{order.image.url}}" alt="...">
+                          {%if order.image%}
+                            <img width="50" height="50"class="img-responsive shopping-cart-item__img" src="{{order.image.url}}" alt="...">
+                          {%endif%}
                         </td>
                         <td>
                           <div class="shopping-cart-item__title">
@@ -112,7 +112,7 @@
                             {{address.address}}
                           </div>
                         </td>
-                        <td>$<span class="js-shop-item__price">{{order.price}}</span></td>
+                        <td><span class="js-shop-item__price">{{order.price}}</span></td>
                         <td> {{order.product_status}}</td>
                         <td><a href="{%url 'order-detail' order.invoice_no%}" class="text-success" >View</a>
                         
@@ -126,6 +126,8 @@
       </div> <!-- / .row -->
     </div>
   </div> <!-- / .row -->
+
+<!-- 
 {%if is_vendor%}
     <div class="row">
         <div class="col-md-12">
@@ -134,14 +136,18 @@
             </div>
         </div>
         <div id="store" class="col-md-9">
-                <!-- store products -->
+               
             {%for product in products%}
                 <div class="row">
-                    <!-- product -->
+                    
                     <div class="col-md-4 col-xs-6">
                         <div class="product">
                             <div class="product-img">
+                              {%if product.image%}
                                 <img src="{{product.image.url}}" alt="">
+                              {%else%}
+                                <img src="{{product.image_url}}" alt="">
+                              {%endif%}
                                 <div class="product-label">
                                     <span class="sale">-30%</span>
                                     <span class="new">NEW</span>
@@ -170,10 +176,11 @@
                         </div>
                     </div>
                 {%endfor%}
-                <!-- /product -->
+                
             </div>
         </div>
     </div>  
 {%endif%}
+/ .vendor -->
 </div>
 {%endblock body%}

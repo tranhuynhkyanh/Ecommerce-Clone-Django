@@ -107,10 +107,10 @@ class Product(models.Model):
     def __str__(self):
         return self.title
     def get_percentage_discount(self):
-        return (self.old_price / self.price) * 100
+        return int(100 - (self.price / self.old_price) * 100)
     def get_absolute_url(self):
         return reverse("product-detail", kwargs={"pid": self.pid})
-
+    
     
 
 class ProductInventory(models.Model):
@@ -161,9 +161,9 @@ class Order(models.Model):
     product_status = models.TextField(choices=STATUS_CHOICE,max_length=30)
     destination = models.ForeignKey(Address,on_delete=models.CASCADE)
     image = models.ImageField(max_length=200,null=True)
+    #image_url = models.URLField(null=True)
     class Meta:
         verbose_name_plural = "Orders"
-
 class OrderItems(models.Model):
     order = models.ForeignKey(Order,on_delete=models.CASCADE)
     item = models.ForeignKey(Product,on_delete=models.CASCADE)
@@ -202,7 +202,7 @@ class ProductReview(models.Model):
         return percentage
 class Wishlist(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
-    product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name_plural = "Wishlists"

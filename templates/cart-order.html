@@ -13,10 +13,17 @@
               <div class="card-body p-4">
                 <div class="row d-flex justify-content-between align-items-center">
                   <div class="col-md-2 col-lg-2 col-xl-2">
-                    <img
-                      width = "100" height = "100"
-                      src="{{item.product.image.url}}"
-                      class="img-fluid rounded-3" alt="Cotton T-shirt">
+                    {%if item.product.image%}
+                        <img
+                        width = "100" height = "100"
+                        src="{{item.product.image.url}}"
+                        class="img-fluid rounded-3" alt="Cotton T-shirt">
+                    {%else%}
+                        <img
+                        width = "100" height = "100"
+                        src="{{item.product.image_url}}"
+                        class="img-fluid rounded-3" alt="Cotton T-shirt">
+                    {%endif%}
                   </div>
                   <div class="col-md-3 col-lg-3 col-xl-3">
                     <a href="{%url 'product-detail' item.product.pid%}" id="name_product" class="lead fw-normal mb-2" value={{item.product.pid}}>{{item.product.title}}</a>
@@ -44,11 +51,12 @@
                     <button name={{item.product.pid}} class="text-success" onclick="updateFunction(this.name)"><i class="fa fa-recycle">Update</i></button>
                   </div>
                   <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                    <a href="{%url 'delete' item.product.pid%}" class="text-danger"><i class="fa fa-trash">Delete</i></a>
+                    <a href="{%url 'delete' item.product.pid%}" class="text-danger" id = "confirm-delete" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa fa-trash">Delete</i></a>
                   </div>
                 </div>
               </div>
             </div>
+            <hr>
           {%endfor%}
 
   

@@ -8,7 +8,7 @@ urlpatterns = [
     path("logout/",logout_view,name="logout"),
     path("follow/<vid>/",follow,name="follow"),
     path("",profile_view,name="profile"),
-    path("update/",edit_profile,name="profile-update"),
+    path("profile/",edit_profile,name="profile-update"),
     path("inbox/",index,name="chat"),
     path("chat-user/<uid>/",chatPage,name="chat-page"),
 

@@ -1,6 +1,6 @@
 from django.urls import path,include
-from .views import index,StoreView,ProductView,VendorView,CategoryView,CartView,CheckoutView,OrderDetailView,PayMentCompletedView
-from .function import search,search_vendor,filter_product,check_product,add_to_cart,delete_from_cart,update_from_cart,order_create,add_review
+from .views import index,StoreView,ProductView,VendorView,CategoryView,CartView,CheckoutView,OrderDetailView,PayMentCompletedView,WishListView
+from .function import search,search_vendor,filter_product,check_product,add_to_cart,delete_from_cart,update_from_cart,order_create,add_review,delete_order,add_to_wishlist,remove_from_wishlist
 urlpatterns = [
     path("",index,name="index"),
 
@@ -26,6 +26,11 @@ urlpatterns = [
     path("checkout/",CheckoutView,name="checkout"),
     path("order/",order_create,name="order"),
     path("order-detail/<invoice>",OrderDetailView,name="order-detail"),
+    path("delete-order/<invoice>",delete_order,name="delete-order"),
     path("paypal/",include("paypal.standard.ipn.urls")),
-    path("payment-completed/",PayMentCompletedView,name="payment-completed")
+    path("payment-completed/",PayMentCompletedView,name="payment-completed"),
+
+    path("wishlist",WishListView,name="wishlist"),
+    path("add-to-wishlist/",add_to_wishlist,name="add-to-wishlist"),
+    path("remove-from-wishlist/<pid>",remove_from_wishlist,name="remove-from-wishlist")
 ]

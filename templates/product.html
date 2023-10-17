@@ -92,6 +92,7 @@
 					<div class="col-md-5">
 						<div class="product-details">
 							<h2 id = "name_product" class="product-name" value="{{product.pid}}">{{product.title}}</h2>
+							
 							<div>
 								<div class="product-rating">
 									{%for star in range%}
@@ -102,7 +103,7 @@
 										{%endif%}
 									{%endfor%}
 								</div>
-								<a class="review-link" href="#">{{reviews.count}} Review(s) | Add your review</a>
+								<a class="review-link">{{reviews.count}} Review(s)</a>
 							</div>
 							<div>
 								{%if product.price %}
@@ -156,7 +157,8 @@
 								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
 								<li><a href="#"><i class="fa fa-envelope"></i></a></li>
 							</ul>
-
+							<hr>
+							<a class="primary-btn" id = "name_product" value="{{product.pid}}">Sold: 10</a>
 						</div>
 					</div>
 					<!-- /Product details -->
@@ -385,7 +387,12 @@
 									{%else%}
 										<img src="{{product_related.image_url}}" alt="">
 									{%endif%}
-									
+									{%if product_related.price %}
+									<div class="product-label">
+										<span class="sale">-{{product_related.get_percentage_discount}}%</span>
+										<span class="new">NEW</span>
+									</div>
+								{%endif%}
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -482,25 +489,7 @@
 			});
 		});
 })
-function addSingleFunction(pid){
-	$.ajax({
-		url:'/add-to-cart',
-		type: "GET",
-		data: {
-			pid: pid,
-			qty: 1,
-		},
-		success: function(response){
-			document.querySelector('#message').innerHTML = response.messages; 
-			 $("#message").fadeIn(1000);
-			// Ẩn thông báo sau 2 giây
-			setTimeout(function() {
-			  $("#message").fadeOut(1000);
-			}, 2000);
-			console.log(response.messages);
-		}
-	});
-};
+
 var rating = 0;
 $(':radio').change(function() {
 	console.log('New star rating: ' + this.value);

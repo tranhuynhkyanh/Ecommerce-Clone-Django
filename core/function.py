@@ -1,8 +1,8 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.template.loader import render_to_string
 from .models import Product,ProductImages,Vendor,Category,Order,OrderItems,Cart,ProductInventory,ProductCart,Address,ProductReview,Wishlist
-from django.db.models import Q,Count, Window
-
+from django.db.models import Q,Count, Window,Sum
+from django.core.paginator import Paginator,Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from userauth.models import Follow
 from django.contrib import messages
@@ -35,11 +35,23 @@ def filter_product(request):
     categories = request.GET.getlist("category[]")
     vendors = request.GET.getlist("vendor[]")
     products= Product.objects.all()
+    
     if len(categories)>0:
         products = products.filter(category__id__in=categories).distinct()
     if len(vendors)>0:
         products = products.filter(vendor__id__in=vendors).distinct()
-    data = render_to_string("filtered/product-list.html",{'products':products})
+    paginator = Paginator(products, 9)
+    page = request.GET.get('page')
+    try:
+        paginated_products = paginator.page(page)
+    except PageNotAnInteger:
+        # If the page parameter is not an integer, show the first page
+        paginated_products = paginator.page(1)
+
+    except EmptyPage:
+        # If the page is out of range, show the last page
+        paginated_products = paginator.page(paginator.num_pages)
+    data = render_to_string("filtered/product-list.html",{'products':paginated_products})
     return JsonResponse({'data':data})
 
 def top_selling():
@@ -47,8 +59,8 @@ def top_selling():
         quantity_ordered=Count('quantity'),
         rank=Window(expression=Count('quantity'), order_by=Count('quantity').desc())
     ).order_by('-rank')
-
-    return order_items
+    print(order_items.values_list('item',flat=True))
+    return Product.objects.filter(id__in=order_items.values_list('item'))
 
 @login_required
 def check_product(request):
@@ -68,10 +80,7 @@ def check_product(request):
         price = int(qty) * int(product.old_price)
     return JsonResponse({'messages':messages,
                          'price':price})
-@login_required
-def add_to_wishlist(request,pid):
- 
-    return
+
 
 def get_rating(reviews):
     ratings = [0,0,0,0,0]
@@ -198,7 +207,7 @@ def order_create(request):
             price= total_price,
             product_status="Processing",
             destination = address,
-            image = products[0].product.image,
+            image = products[0].product.image if products[0].product.image else products[0].product.image_url,
             )
         for product in products:
             inventory = ProductInventory.objects.get(product=product.product)
@@ -234,4 +243,28 @@ def order_create(request):
     else:
         return redirect('index')
     
+def delete_order(request,invoice):
+    order = Order.objects.get(invoice_no=invoice)
+    order_items = OrderItems.objects.filter(order=order)
+    for item in order_items:
+        product_restock = ProductInventory.objects.get(product=item.item)
+        product_restock.quantity += item.quantity
+        product_restock.save()
+    order.delete()
+    
+    return redirect("userauth:profile")
 
+@login_required
+def add_to_wishlist(request):
+    pid = request.GET.get('pid')
+    w = Wishlist.objects.filter(product=Product.objects.get(pid=pid),user=request.user)
+    if not w:
+        Wishlist.objects.create(product=Product.objects.get(pid=pid),user=request.user)
+
+    return JsonResponse({"message":"Da them san pham vao danh sach yeu thich"}) 
+
+@login_required
+def remove_from_wishlist(request,pid):
+    product_remove = Wishlist.objects.get(product=Product.objects.get(pid=pid))
+    product_remove.delete()
+    return redirect("wishlist")

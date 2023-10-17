@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 
 def handle_not_found(request, exception):
     return render(request, "404.html")
+
+
 # Create your views here.
 def login_view(request):
     if request.user.is_authenticated:
@@ -72,13 +74,8 @@ def follow(request,vid):
     return redirect('vendor-detail',vendor.vid)
 @login_required
 def profile_view(request):
-    try :
-        vendor = Vendor.objects.get(user=request.user)
-        products = Product.objects.filter(vendor=vendor).all()
-        is_vendor = True
-    except:
-        products = {}
-        is_vendor = False
+
+    products = {}
     try:
         order = Order.objects.filter(user=request.user).all()
         
@@ -86,60 +83,48 @@ def profile_view(request):
         order = {}
         item = {}
     user = User.objects.get(id = request.user.id)
-    address = Address.objects.filter(user=user)
+    address = Address.objects.filter(user=user).first()
     context = {
-        'is_vendor' : is_vendor,
+       
         'products' : products,
         'orders': order,
         'user': user,
-        'address': address
+        'address': address if address else {}
     }
     return render(request,"userauth/profile.html",context)
 @login_required
 def edit_profile(request):
     profile = User.objects.get(id=request.user.id)
     print(profile.first_name,profile.last_name,profile.image)
-    address_user,created = Address.objects.get_or_create(user = request.user)
+    address_user = Address.objects.filter(user = request.user).first()
     if request.method == "POST":
-        user_form = UserProfileForm(request.POST,request.FILES)
-        address_form = AddressEditForm(request.POST)
-        if user_form.is_valid() or address_form.is_valid():
-            first_name = user_form.cleaned_data.get("first_name")
-            last_name = user_form.cleaned_data.get("last_name")
-            address= address_form.cleaned_data.get("address")
-            phone= address_form.cleaned_data.get("phone")
-            image = user_form.cleaned_data.get("image")
-            print(first_name,last_name,address,phone)
-            profile.first_name = first_name
-            profile.last_name= last_name
-            profile.image = image
-            profile.save()
-            address_user.address= address
-            address_user.phone = phone
-            address_user.save()
-            vendor = Vendor.objects.get(user=request.user)
-            products = Product.objects.filter(vendor=vendor).all()
-            orders = Order.objects.filter(user=request.user).all()
+        first_name = request.POST.get("first-name")
+        last_name = request.POST.get("last-name")
+        address= request.POST.get("address")
+        phone= request.POST.get("tel")
+        image = request.FILES.get('image')
+        print(first_name,last_name,address,phone,request.FILES.get('image'))
+        profile.first_name = first_name
+        profile.last_name= last_name
+        profile.image = image if image else profile.image
+        profile.save()
+        address_user.address= address
+        address_user.phone = phone
+        address_user.save()
+        orders = Order.objects.filter(user=request.user).all()
+        
+        context = {
+            'user' : request.user,
+            'orders': orders,
+            'address': address_user
             
-            context = {
-                'is_vendor' : True,
-                'user' : request.user,
-                'products' : products,
-                'orders': orders,
-                'address': address_user
-               
-            }
-            return render(request,"userauth/profile.html",context)
-    else:
-        user_form = UserProfileForm()
-        address_form = AddressEditForm()
-    if created == False:
-        address_user = {}
+        }
+        return render(request,"userauth/profile.html",context)
+    if not address_user:
+        address_user = Address.objects.create(user=request.user,address="",phone=0)
     context = {
         'profile':profile,
         'address': address_user,
-        'user_form' : user_form,
-        'address_form': address_form
     }
     return render(request,"userauth/profile-update.html",context)
 

@@ -6,11 +6,12 @@ from django.db.models import Q
 from django.http import JsonResponse
 from userauth.models import Follow
 from django.contrib import messages
-from django.db.models import Avg
+from django.db.models import Avg,Sum
 from .function import get_rating,top_selling
-from paypal.standard.forms import PayPalPaymentsForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator,Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
+
 
 def index(request):
     new_product = Product.objects.all().order_by('-id')
@@ -30,11 +31,27 @@ def StoreView(request):
     products = Product.objects.all()
     category = Category.objects.all()
     brand = Vendor.objects.all()
+    paginator = Paginator(products,9)
+
+    top_products = top_selling()
+    # Get the requested page number
+    page = request.GET.get('page')
     
+    try:
+        paginated_products = paginator.page(page)
+    except PageNotAnInteger:
+        # If the page parameter is not an integer, show the first page
+        paginated_products = paginator.page(1)
+
+    except EmptyPage:
+        # If the page is out of range, show the last page
+        paginated_products = paginator.page(paginator.num_pages)
     context ={
-        'products' : products,
+        'products' : paginated_products,
         'categories' : category,
-        'brands': brand
+        'brands': brand,
+        'tops': top_products,
+ 
     }
     return render(request,'store.html',context)
 
@@ -42,10 +59,12 @@ def StoreView(request):
 def CategoryView(request,cid):
     category = get_object_or_404(Category,cid=cid)
     products = Product.objects.filter(category=category).all()
+    top_products = top_selling()
     context ={
         'products' : products,
         'categories': {},
-        'category_': category
+        'category_': category,
+        'tops': top_products
     }
 
     return render(request,'store.html',context)
@@ -87,7 +106,23 @@ def ProductView(request,pid):
 def VendorView(request,vid):
     vendor = get_object_or_404(Vendor,vid=vid)
     if request.user != vendor.user:
+        review_vendor = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=vendor)).all().aggregate(Avg('rating'))
+        total_sold = OrderItems.objects.filter(item__in=Product.objects.filter(vendor=vendor)).values('quantity').aggregate(Sum('quantity'))['quantity__sum']
         products = Product.objects.filter(vendor=vendor).all()
+        paginator = Paginator(products, 9)
+
+        # Get the requested page number
+        page = request.GET.get('page')
+
+        try:
+            paginated_products = paginator.page(page)
+        except PageNotAnInteger:
+            # If the page parameter is not an integer, show the first page
+            paginated_products = paginator.page(1)
+
+        except EmptyPage:
+            # If the page is out of range, show the last page
+            paginated_products = paginator.page(paginator.num_pages)
         new_products = Product.objects.filter(vendor=vendor).all().order_by("-id")
         items_sell = OrderItems.objects.all()
         try : 
@@ -97,9 +132,12 @@ def VendorView(request,vid):
             is_followed = False
         context = {
             'vendor' : vendor,
-            'products' : products,
+            'products' : paginated_products,
             'is_followed': is_followed,
             'new_products': new_products,
+            'review_vendor': review_vendor if not review_vendor else 0,
+            'total_sold' : total_sold if total_sold else 0,
+ 
         }
         return render (request,'vendor.html',context)
 
@@ -172,3 +210,10 @@ def PayMentCompletedView(request):
     context= request.POST
 
     return render(request,"payment-completed.html",{'context':context})
+@login_required
+def WishListView(request):
+    products = Product.objects.filter(id__in=Wishlist.objects.filter(user=request.user).values_list('product'))
+    context = {
+        'products': products
+    }
+    return render(request,"wishlist.html",context)

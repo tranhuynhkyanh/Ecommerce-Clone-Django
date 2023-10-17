@@ -44,9 +44,9 @@
 			<div id="top-header">
 				<div class="container">
 					<ul class="header-links pull-left">
-						<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-						<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
-						<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+
+						<li><a href="#"><i class="fa fa-envelope-o"></i> tranhuynhkyanh@gmail.com</a></li>
+
 					</ul>
 					<ul class="header-links pull-right">
 						{%if request.user.is_authenticated%}
@@ -96,7 +96,7 @@
 							<div class="header-ctn">
 								<!-- Wishlist -->
 								<div>
-									<a href="#">
+									<a href="{%url 'wishlist'%}">
 										<i class="fa fa-heart-o"></i>
 										<span>Your Wishlist</span>
 										<div class="qty">2</div>
@@ -160,7 +160,11 @@
 		<!-- /HEADER -->
 		{%endblock header%}
 		{% block default_messages %}
-		{% endblock default_messages %}
+		<div class="alert alert-info alert-dismissable" id ="message" style="display:none">
+			<a class="panel-close close" data-dismiss="alert">×</a> 
+			<i class="fa fa-coffee"></i>
+		</div>
+		{%endblock default_messages%}
 		{%block nav%}
 		<!-- NAVIGATION -->
 		<nav id="navigation">
@@ -248,14 +252,7 @@
 					<div class="col-md-12">
 						<div class="section-title">
 							<h3 class="title">New Products</h3>
-							<div class="section-nav">
-								<ul class="section-tab-nav tab-nav">
-									{%for category in categories%}
-										<li><a data-toggle="tab" href="{%url 'category-detail' category.cid%}">{{category.title}}</a></li>
-										
-									{%endfor%}
-								</ul>
-							</div>
+							
 						</div>
 					</div>
 					<!-- /section title -->
@@ -276,10 +273,12 @@
 													{%else%}
 														<img width="200" height="200" src="{{product.image_url}}" alt="">
 													{%endif%}
-													<div class="product-label">
-														<span class="sale">-30%</span>
-														<span class="new">NEW</span>
-													</div>
+													{%if product.price %}
+														<div class="product-label">
+															<span class="sale">-{{product.get_percentage_discount}}%</span>
+															<span class="new">NEW</span>
+														</div>
+													{%endif%}
 												</div>
 												<div class="product-body">
 													<p class="product-category">{{product.category}}</p>
@@ -297,13 +296,18 @@
 														<i class="fa fa-star"></i>
 													</div>
 													<div class="product-btns">
-														<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-														<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-														<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+														<button class="add-to-wishlist" value="{{product.pid}}" onclick= "addWishList(this.value)"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+														
 													</div>
 												</div>
 												<div class="add-to-cart">
-													<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+													{%if product.in_stock%}
+														<button class="add-to-cart-btn" value="{{product.pid}}" onclick= "addSingleFunction(this.value)">
+															<i class="fa fa-shopping-cart"></i> add to cart</button>
+													{%else%}
+														<button class="primary-btn" >
+															<i class="fa fa-shopping-cart"></i> Out of Stock</button>
+													{%endif%}
 												</div>
 											</div>
 										{%endfor%}
@@ -393,32 +397,50 @@
 									<div class="products-slick" data-nav="#slick-nav-2">
 										<!-- product -->
 										{%for top in tops%}
-											<div class="product">
-												<div class="product-img">
-													<img src="{% static 'img/product06.png' %}" alt="">
-											
-												</div>
-												<div class="product-body">
-													<p class="product-category">{{top.item.category.title}}</p>
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
-													<div class="product-rating">
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
-														<i class="fa fa-star"></i>
+										<div class="product">
+											<div class="product-img">
+												{%if top.image%}
+													<img width="200" height="200" src="{{top.image.url}}" alt="">
+												{%else%}
+													<img width="200" height="200" src="{{top.image_url}}" alt="">
+												{%endif%}
+												{%if top.price %}
+													<div class="product-label">
+														<span class="sale">-{{top.get_percentage_discount}}%</span>
+														<span class="new">NEW</span>
 													</div>
-													<div class="product-btns">
-														<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-														<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-														<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
-													</div>
+												{%endif%}
+											</div>
+											<div class="product-body">
+												<p class="product-category">{{top.category}}</p>
+												<h3 class="product-name"><a href="{{top.get_absolute_url}}">{{top.title}}</a></h3>
+												{%if top.price %}
+													<h4 class="product-price">{{top.price}} <del class="product-old-price">{{top.old_price}}</del></h4>
+												{%else%}
+													<h4 class="product-price">{{top.old_price}}</h4>
+												{%endif%}
+												<div class="product-rating">
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
 												</div>
-												<div class="add-to-cart">
-													<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+												<div class="product-btns">
+													<button class="add-to-wishlist" value="{{top.pid}}" onclick= "addWishList(this.value)"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+													
 												</div>
 											</div>
+											<div class="add-to-cart">
+												{%if top.in_stock%}
+													<button class="add-to-cart-btn" value="{{top.pid}}" onclick= "addSingleFunction(this.value)">
+														<i class="fa fa-shopping-cart"></i> add to cart</button>
+												{%else%}
+													<button class="primary-btn" >
+														<i class="fa fa-shopping-cart"></i> Out of Stock</button>
+												{%endif%}
+											</div>
+										</div>
 										{%endfor%}
 										<!-- /product -->
 
@@ -488,11 +510,11 @@
 						<div class="col-md-3 col-xs-6">
 							<div class="footer">
 								<h3 class="footer-title">About Us</h3>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+								
 								<ul class="footer-links">
-									<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
-									<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
-									<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+									
+									
+									<li><a href="#"><i class="fa fa-envelope-o"></i>tranhuynhkyanh@gmail.com</a></li>
 								</ul>
 							</div>
 						</div>
@@ -614,10 +636,53 @@
 						}
 					});
 				});
+				
 			});
 		</script>
-		{%block script%}
-
-		{%endblock script%}
+		<script>
+			function addSingleFunction(pid){
+				$.ajax({
+					url:'/add-to-cart',
+					type: "GET",
+					data: {
+						pid: pid,
+						qty: 1,
+					},
+					success: function(response){
+						document.querySelector('#message').innerHTML = response.messages; 
+						$("#message").fadeIn(1000);
+						// Ẩn thông báo sau 2 giây
+						setTimeout(function() {
+						$("#message").fadeOut(1000);
+						}, 2000);
+						console.log(response.messages);
+						
+					}
+				});
+			};
+		</script>
+		<script>
+			function addWishList(pid){
+				$.ajax({
+					url:'/add-to-wishlist',
+					type:"GET",
+					data:{
+						pid: pid,
+					},
+					success: function(response){
+						document.querySelector('#message').innerHTML = response.messages; 
+						$("#message").fadeIn(1000);
+						// Ẩn thông báo sau 2 giây
+						setTimeout(function() {
+						$("#message").fadeOut(1000);
+						}, 2000);
+						console.log(response.messages);
+					}
+				});
+			};
+		</script>
 	</body>
+	{%block script%}
+		
+	{%endblock script%}
 </html>
