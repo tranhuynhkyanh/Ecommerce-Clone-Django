@@ -16,13 +16,12 @@ import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Ecommerce.settings")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-DEBUG = False
 
 # Application definition
 
@@ -121,23 +120,11 @@ TEMPLATES = [
         },
     },
 ]
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-
 #WSGI_APPLICATION = "Ecommerce.wsgi.application"
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -209,12 +196,12 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
 
     
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-g=jzhv5zv8nxar2z0jpv#jv-$o*p(+e597*wgkau$gc&7v*m4e')
-DEBUG = True
-ADMIN_ENABLED = True
+DEBUG = False
+ADMIN_ENABLED = False
 ALLOWED_HOSTS = ['*']
 
 
-if not DEBUG:
+if DEBUG == False:
     DATABASES = {
 	"default": dj_database_url.parse("postgres://kyanhstore_user:HJoLoUBRT4wPok7GmGVDmB5U1o8kvHd7@dpg-ckg156oeksbs73dnnrvg-a.oregon-postgres.render.com/kyanhstore")
     }
