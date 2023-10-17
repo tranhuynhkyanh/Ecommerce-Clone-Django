@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.import datetime
 from django.core.cache import cache
 import datetime
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Ecommerce.settings")
 
 def user_directory_path(instance,filename):
     return 'user_{0}/{1}'.format(instance.id,filename)

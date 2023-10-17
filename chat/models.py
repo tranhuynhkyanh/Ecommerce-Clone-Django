@@ -1,9 +1,8 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from userauth.models import User
 # Create your models here.
-
-User = get_user_model()
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Ecommerce.settings")
 
 class ChatModel(models.Model):
     sender = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name="sender")
