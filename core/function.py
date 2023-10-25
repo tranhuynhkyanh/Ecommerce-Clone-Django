@@ -40,16 +40,21 @@ def filter_product(request):
     price_max = request.GET.get("priceMax").replace(".00","") if request.GET.get("priceMax") else 10000000
     products = Product.objects.filter(Q(price__range=(price_min, price_max), old_price__isnull=False) | Q(old_price__range=(price_min, price_max)))
 
-    
+   
     if len(categories)>0:
         products = products.filter(category__id__in=categories)
     if len(vendors)>0:
         products = products.filter(vendor__id__in=vendors)
-    products= products.order_by(Case(
-        When(price__isnull=False,then="price"),
-        default ="old_price",)) if sort == 1 else products.order_by(-Case(
-                                        When(price__isnull=False,then="price"),
-                                        default ="old_price",))
+    if sort == "0":
+       
+        products= products.order_by(Case(
+            When(price__isnull=False,then="price"),
+            default ="old_price"))  
+    else:
+       
+        products= products.order_by(-Case(
+            When(price__isnull=False,then="price"),
+            default ="old_price"))
     paginator = Paginator(products, 9)
     page = request.GET.get('page')
     try:
@@ -75,7 +80,8 @@ def filter_product(request):
         'categories' : category,
         'brands': brand,
         'tops': top_products,
-        'price_q':price
+        'price_q':price,
+        'sort':sort
          }
         return render(request,"filtered/store-filter.html",context=context)
     else:

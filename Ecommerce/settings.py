@@ -197,13 +197,14 @@ USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
     
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-g=jzhv5zv8nxar2z0jpv#jv-$o*p(+e597*wgkau$gc&7v*m4e')
 DEBUG = True
-ADMIN_ENABLED = True
+
 ALLOWED_HOSTS = ['*']
 #SECURE_SSL_REDIRECT = True
 #SESSION_COOKIE_SECURE = True
 #CSRF_COOKIE_SECURE = True
 
 if DEBUG == False:
+    ADMIN_ENABLED = False
     DATABASES = {
 #"default": dj_database_url.parse("postgres://kyanhstore_user:HJoLoUBRT4wPok7GmGVDmB5U1o8kvHd7@dpg-ckg156oeksbs73dnnrvg-a.oregon-postgres.render.com/kyanhstore")
     'default': {
@@ -221,6 +222,7 @@ if DEBUG == False:
     },
 }
 else:
+    ADMIN_ENABLED = True
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

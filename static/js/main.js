@@ -182,7 +182,7 @@
 			filter_vendor : filter_object.vendor,
 			priceMin : priceInputMin.value,
 			priceMax : priceInputMax.value,
-			sort: $("#sort-by").value
+			sort: $("#sort-by :selected").val()
 		}
 		console.log(data);
 		// Gửi yêu cầu AJAX

@@ -252,7 +252,7 @@
 				filter_vendor : filter_object.vendor,
 				priceMin : priceInputMin.value,
 				priceMax : priceInputMax.value,
-				sort: $("#sort-by").value
+				sort: $("#sort-by :selected").val()
 			}
 			console.log("Filter object: ", data);
 			$.ajax({
@@ -277,8 +277,7 @@
 			$(".filter-checkbox").each(function(){
 				let filter_value = $(this).val();
 				let filter_key = $(this).data("filter");
-				console.log("Filter value:", filter_value);
-				console.log("Filter key:", filter_key)
+				
 				filter_object[filter_key] = Array.from(document.querySelectorAll('input[data-filter='+filter_key+']:checked')).map(function(element){
 					return element.value
 				});
@@ -286,15 +285,15 @@
 			
 			var priceInputMax = document.getElementById('price-max'),
 				priceInputMin = document.getElementById('price-min');
-			
+			var e = document.getElementById("sort-by");
 			const data  ={
 				filter_category : filter_object.category,
 				filter_vendor : filter_object.vendor,
 				priceMin : priceInputMin.value,
 				priceMax : priceInputMax.value,
-				sort: $("#sort-by").value
+				sort: $("#sort-by :selected").val()
 			}
-			console.log("Filter object: ", data);
+			console.log("Sort by: ", $("#sort-by :selected").val())
 			$.ajax({
 				url:"{%url 'filter-product'%}",
 				data: data,

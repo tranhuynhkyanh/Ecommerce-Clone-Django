@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from django.urls import reverse
 from django.template.loader import render_to_string
 from .models import Product,ProductImages,Vendor,Category,Order,OrderItems,Cart,ProductInventory,ProductCart,Address,ProductReview,Wishlist
-from django.db.models import Q
+from django.db.models import Q,Case,When
 from django.http import JsonResponse
 from userauth.models import Follow
 from django.contrib import messages
@@ -29,6 +29,9 @@ def index(request):
 
 def StoreView(request):
     products = Product.objects.all()
+    products= products.order_by(Case(
+            When(price__isnull=False,then="price"),
+            default ="old_price"))  
     category = Category.objects.all()
     brand = Vendor.objects.all()
     paginator = Paginator(products,9)
@@ -58,6 +61,9 @@ def StoreView(request):
 def CategoryView(request,cid):
     category = get_object_or_404(Category,cid=cid)
     products = Product.objects.filter(category=category).all()
+    products= products.order_by(Case(
+            When(price__isnull=False,then="price"),
+            default ="old_price"))  
     top_products = top_selling()
     context ={
         'products' : products,

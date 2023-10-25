@@ -60,14 +60,14 @@
 							<h3 class="aside-title">Price</h3>
 							<div class="price-filter">
 								<div id="price-slider"></div>
-								<div class="input-number price-min">
-									<input id="price-min" type="number" value="{{price_q.0}}">
+								<div class="input-number price-min" hidden>
+									<input id="price-min" type="number" name="{{price_q.0}}">
 									<span class="qty-up">+</span>
 									<span class="qty-down">-</span>
 								</div>
 								<span>-</span>
-								<div class="input-number price-max">
-									<input id="price-max" type="number" value="{{price_q.1}}">
+								<div class="input-number price-max" hidden>
+									<input id="price-max" type="number" name="{{price_q.1}}">
 									<span class="qty-up">+</span>
 									<span class="qty-down">-</span>
 								</div>
@@ -129,8 +129,13 @@
 								<label>
 									Sort By:
 									<select onchange="filter_product()"class="input-select">
-										<option value="0">Price Ascending</option>
-										<option value="1">Price Descending</option>
+										{%if sort == "0"%}
+											<option value="0" selected>Price Ascending</option>
+											<option value="1">Price Descending</option>
+										{%else%}
+											<option value="0">Price Ascending</option>
+											<option value="1" selected>Price Descending</option>
+										{%endif%}
 									</select>
 								</label>
 							</div>
@@ -163,7 +168,7 @@
 										<li ><a href="{{request.get_full_path}}&page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
 									{% endif %}
 									{% if products.has_next %}
-										<li><a href="{{request.get_full_path}}&page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+										<li><a href="{{request.get_full_path}}&page={{ products.next_page_number }}" onclick="UpdatePrice()"><i class="fa fa-angle-right"></i></a></li>
 									{% endif %}
 							
 								</ul></div>
@@ -228,12 +233,32 @@
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
+
 {%endblock body%}
-<script>
-	updatePriceSlider($('#price-max').parent(), $('#price-max').value);
-	updatePriceSlider($('#price-min').parent(),$('#price-min').value);
-</script>
+
 {%block script%}
+<script>
+
+</script>
+<script>
+	function updatePriceSlider(elem , value) {
+		if ( elem.hasClass('price-min') ) {
+			console.log('min')
+			priceSlider.noUiSlider.set([value, null]);
+		} else if ( elem.hasClass('price-max')) {
+			console.log('max')
+			priceSlider.noUiSlider.set([null, value]);
+		}}
+	var priceInputMax = document.getElementById('price-max'),
+	priceInputMin = document.getElementById('price-min');	
+	var priceSlider = document.getElementById('price-slider');
+	priceSlider.noUiSlider.updateOptions({
+        range: {
+            'min': parseInt($('#price-min').attr("name")),
+            'max': parseInt($('#price-max').attr("name"))
+        }
+    });
+</script>
 <script>
 	$(document).ready(function(){
 		$(".filter-checkbox").on("click",function(){
@@ -255,7 +280,7 @@
 				filter_vendor : filter_object.vendor,
 				priceMin : priceInputMin.value,
 				priceMax : priceInputMax.value,
-				sort: $("#sort-by").value
+				sort: $("#sort-by :selected").val()
 			}
 			console.log("Filter object: ", data);
 			$.ajax({
@@ -266,7 +291,7 @@
 					console.log("Sending data...");
 				} ,
 				success: function(response){
-					console.log(response.data);
+					
 					$("#filter-products").html(response.data);
 					
 				}
@@ -280,8 +305,6 @@
 			$(".filter-checkbox").each(function(){
 				let filter_value = $(this).val();
 				let filter_key = $(this).data("filter");
-				console.log("Filter value:", filter_value);
-				console.log("Filter key:", filter_key)
 				filter_object[filter_key] = Array.from(document.querySelectorAll('input[data-filter='+filter_key+']:checked')).map(function(element){
 					return element.value
 				});
@@ -295,9 +318,9 @@
 				filter_vendor : filter_object.vendor,
 				priceMin : priceInputMin.value,
 				priceMax : priceInputMax.value,
-				sort: $("#sort-by").value
+				sort: $("#sort-by :selected").val()
 			}
-			console.log("Filter object: ", data);
+			console.log("Sort by: ", $("#sort-by").value);
 			$.ajax({
 				url:"{%url 'filter-product'%}",
 				data: data,
