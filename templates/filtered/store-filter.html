@@ -38,7 +38,11 @@
 							<div class="checkbox-filter">
 								{%for category in categories%}
 									<div id ="filter-checkbox" class="input-checkbox">
-										<input class="filter-checkbox" type="checkbox" data-filter="category" value="{{category.id}}" id="{{category.title}}">
+										{%if category.cid in category_q%}
+											<input class="filter-checkbox" type="checkbox" data-filter="category" value="{{category.id}}" id="{{category.title}}" checked>
+										{%else%}
+											<input class="filter-checkbox" type="checkbox" data-filter="category" value="{{category.id}}" id="{{category.title}}" >
+										{%endif%}
 										<label for="{{category}}">
 											<span></span>
 											{{category.title}}
@@ -57,13 +61,13 @@
 							<div class="price-filter">
 								<div id="price-slider"></div>
 								<div class="input-number price-min">
-									<input id="price-min" type="number">
+									<input id="price-min" type="number" value="{{price_q.0}}">
 									<span class="qty-up">+</span>
 									<span class="qty-down">-</span>
 								</div>
 								<span>-</span>
 								<div class="input-number price-max">
-									<input id="price-max" type="number">
+									<input id="price-max" type="number" value="{{price_q.1}}">
 									<span class="qty-up">+</span>
 									<span class="qty-down">-</span>
 								</div>
@@ -77,7 +81,11 @@
 							<div class="checkbox-filter">
 								{%for brand in brands%}
 									<div class="input-checkbox">
-										<input data-filter="vendor" class="filter-checkbox" type="checkbox" id="{{brand.vid}}" value="{{brand.id}}">
+                                        {%if brand.vid in vendor_q%}
+										    <input data-filter="vendor" class="filter-checkbox" type="checkbox" id="{{brand.vid}}" value="{{brand.id}}" checked>
+                                        {%else%}
+                                            <input data-filter="vendor" class="filter-checkbox" type="checkbox" id="{{brand.vid}}" value="{{brand.id}}">
+                                        {%endif%}
 										<label for="{{brand.vid}}">
 											<span></span>
 											{{brand.title}}
@@ -116,11 +124,11 @@
 					<!-- STORE -->
 					<div id ="sort-by" class="col-md-9">
 						<!-- store top filter -->
-						<div class="store-filter clearfix" >
-							<div class="store-sort" >
+						<div class="store-filter clearfix">
+							<div class="store-sort">
 								<label>
 									Sort By:
-									<select onchange="filter_product()" class="input-select" id="sort-by">
+									<select onchange="filter_product()"class="input-select">
 										<option value="0">Price Ascending</option>
 										<option value="1">Price Descending</option>
 									</select>
@@ -135,90 +143,83 @@
 						<!-- /store top filter -->
 					
 						<!-- store products -->
-					
-						<div id ="filter-products" class="row">
-							{%block filter%}
-							<div id="paginator" class="row">
-							<ul class="store-pagination">
-								{% if products.has_previous %}
-									
-									<li><a href="?page={{ products.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
-									<li><a href="?page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
-								{% endif %}
-	
-								{% if products.number != products.paginator.num_pages  %}
-									<li class="active"><a href="?page={{ products.number }}">{{ products.number }}</a></li>
-								{%endif%}
-									<li> ... {{range}} </li>
-								{%if products.number == products.paginator.num_pages%}
-									<li class="active"><a href="?page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
-								{%else%}
-									<li ><a href="?page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
-								{% endif %}
-								{% if products.has_next %}
-									<li><a href="?page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
-								{% endif %}
-						
-							</ul></div>
-						{%for product in products%}
-							<!-- product -->
-							<div class="col-md-4 col-xs-6" style="   width: 250px;
-							height: 450px; margin: 0 auto; padding: 10px;">
-								<div class="product" >
-									<div class="product-img">
-										{%if product.image%}
-											<img width = "200" height="200" src="{{product.image.url}}" alt="{{product.get_absolute_url}">
-										{%else%}
-											<img width = "200" height="200" src="{{product.image_url}}" alt="{{product.get_absolute_url}">
-										{%endif%}
-										{%if product.price %}
-											<div class="product-label">
-												<span class="sale">-{{product.get_percentage_discount}}%</span>
-												<span class="new">NEW</span>
+							<div id ="filter-products" class="row">
+								{%block filter%}
+								<div id="paginator" class="row">
+								<ul class="store-pagination">
+									{% if products.has_previous %}
+										
+										<li><a href="{{request.get_full_path}}&page={{ products.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+										<li><a href="{{request.get_full_path}}&page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
+									{% endif %}
+		
+									{% if products.number != products.paginator.num_pages  %}
+										<li class="active"><a href="{{request.get_full_path}}&page={{ products.number }}">{{ products.number }}</a></li>
+									{%endif%}
+										<li> ... {{range}} </li>
+									{%if products.number == products.paginator.num_pages%}
+										<li class="active"><a href="{{request.get_full_path}}&page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
+									{%else%}
+										<li ><a href="{{request.get_full_path}}&page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
+									{% endif %}
+									{% if products.has_next %}
+										<li><a href="{{request.get_full_path}}&page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+									{% endif %}
+							
+								</ul></div>
+							{%for product in products%}
+								<!-- product -->
+								<div class="col-md-4 col-xs-6" style="   width: 250px;
+								height: 450px; margin: 0 auto; padding: 10px;">
+									<div class="product" >
+										<div class="product-img">
+											{%if product.image%}
+												<img width = "200" height="200" src="{{product.image.url}}" alt="{{product.get_absolute_url}">
+											{%else%}
+												<img width = "200" height="200" src="{{product.image_url}}" alt="{{product.get_absolute_url}">
+											{%endif%}
+											{%if product.price %}
+												<div class="product-label">
+													<span class="sale">-{{product.get_percentage_discount}}%</span>
+													<span class="new">NEW</span>
+												</div>
+											{%endif%}
+										</div>
+										<div class="product-body">
+											<p class="product-category">{{product.category}}</p>
+											<h2 class="product-name"><a href="{{product.get_absolute_url}}">{{product.title}}</a></h2>
+											{%if product.price %}
+												<h4 class="product-price">{{product.price}} <del class="product-old-price">{{product.old_price}}</del></h4>
+											{%else%}
+												<h4 class="product-price">{{product.old_price}}</h4>
+											{%endif%}
+											<div class="product-rating">
+												<i class="fa fa-star"></i>
+												<i class="fa fa-star"></i>
+												<i class="fa fa-star"></i>
+												<i class="fa fa-star"></i>
+												<i class="fa fa-star"></i>
 											</div>
-										{%endif%}
-									</div>
-									<div class="product-body">
-										<p class="product-category">{{product.category}}</p>
-										<h2 class="product-name"><a href="{{product.get_absolute_url}}">{{product.title}}</a></h2>
-										{%if product.price %}
-											<h4 class="product-price">{{product.price}} <del class="product-old-price">{{product.old_price}}</del></h4>
-										{%else%}
-											<h4 class="product-price">{{product.old_price}}</h4>
-										{%endif%}
-										<div class="product-rating">
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
+											<div class="product-btns">
+												<button class="add-to-wishlist" value="{{product.pid}}" onclick= "addWishList(this.value)"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+											</div>
 										</div>
-										<div class="product-btns">
-											<button class="add-to-wishlist" value="{{product.pid}}" onclick= "addWishList(this.value)"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+										<div class="add-to-cart">
+											{%if product.in_stock%}
+												<button class="add-to-cart-btn" value="{{product.pid}}" onclick= "addSingleFunction(this.value)">
+													<i class="fa fa-shopping-cart"></i> add to cart</button>
+											{%else%}
+												<button class="primary-btn" >
+													<i class="fa fa-shopping-cart"></i> Out of Stock</button>
+											{%endif%}
 										</div>
-									</div>
-									<div class="add-to-cart">
-										{%if product.in_stock%}
-											<button class="add-to-cart-btn" value="{{product.pid}}" onclick= "addSingleFunction(this.value)">
-												<i class="fa fa-shopping-cart"></i> add to cart</button>
-										{%else%}
-											<button class="primary-btn" >
-												<i class="fa fa-shopping-cart"></i> Out of Stock</button>
-										{%endif%}
 									</div>
 								</div>
-							</div>
-						{%endfor%}
-							<!-- /product -->
-						
+							{%endfor%}
+                                    <!-- /product -->
 
-						</div>
-						<!-- /store products -->
-
-						<!-- store bottom filter -->
-				
-						<!-- /store bottom filter -->
-					</div>
+                                </div>
+                            </div>
 					{%endblock filter%}
 					<!-- /STORE -->
 				</div>
@@ -228,11 +229,14 @@
 		</div>
 		<!-- /SECTION -->
 {%endblock body%}
-
+<script>
+	updatePriceSlider($('#price-max').parent(), $('#price-max').value);
+	updatePriceSlider($('#price-min').parent(),$('#price-min').value);
+</script>
 {%block script%}
 <script>
 	$(document).ready(function(){
-		$(".filter-checkbox").on("change",function(){
+		$(".filter-checkbox").on("click",function(){
 			let filter_object = {};
 			$(".filter-checkbox").each(function(){
 				let filter_value = $(this).val();
@@ -243,7 +247,6 @@
 					return element.value
 				});
 			});
-			
 			var priceInputMax = document.getElementById('price-max'),
 				priceInputMin = document.getElementById('price-min');
 			
@@ -263,7 +266,7 @@
 					console.log("Sending data...");
 				} ,
 				success: function(response){
-					
+					console.log(response.data);
 					$("#filter-products").html(response.data);
 					
 				}
@@ -310,5 +313,4 @@
 			})
 		}
 </script>
-
 {%endblock script%}

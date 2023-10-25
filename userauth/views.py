@@ -102,8 +102,8 @@ def edit_profile(request):
         last_name = request.POST.get("last-name")
         address= request.POST.get("address")
         phone= request.POST.get("tel")
-        image = request.FILES.get('image')
-        print(first_name,last_name,address,phone,request.FILES.get('image'))
+        image = request.FILES.get('imageUp')
+        print(request.FILES.get('imageUp'))
         profile.first_name = first_name
         profile.last_name= last_name
         profile.image = image if image else profile.image

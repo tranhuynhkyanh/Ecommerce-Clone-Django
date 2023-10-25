@@ -7,30 +7,31 @@
       <hr>
 	<div class="row">
       <!-- left column -->
-      <div class="col-md-3">
-        <div class="text-center">
-            {%if profile.image%}
-              <img height="300" width="300" src={{profile.image.url}}>
-            {%endif%}
-            <input class="input" type="file" name="image" accept="image/*">
-          <h6>Upload a different photo...</h6>
-    
-        </div>
-      </div>
-      
-      <!-- edit form column -->
-      <div class="col-md-9 personal-info">
-        {%if user_form.errors%}
-        <div class="alert alert-info alert-dismissable">
-          <a class="panel-close close" data-dismiss="alert">×</a> 
-          <i class="fa fa-coffee"></i>
-         {{user_form.errors}}
-        </div>
-        {%endif%}
-        <h3>Personal info</h3>
-        
-        <form method="POST" class="form-horizontal" role="form">
+   
+        <form method="POST" class="form-horizontal" role="form" enctype='multipart/form-data'>
             {% csrf_token %}
+            <div class="col-md-3">
+              <div class="text-center">
+                  {%if profile.image%}
+                    <img height="300" width="300" src={{profile.image.url}}>
+                  {%endif%}
+                  <input type="file" name="imageUp" accept="image/*">
+                <h6>Upload a different photo...</h6>
+          
+              </div>
+            </div>
+            
+            <!-- edit form column -->
+            <div class="col-md-9 personal-info">
+              {%if user_form.errors%}
+              <div class="alert alert-info alert-dismissable">
+                <a class="panel-close close" data-dismiss="alert">×</a> 
+                <i class="fa fa-coffee"></i>
+               {{user_form.errors}}
+              </div>
+              {%endif%}
+              <h3>Personal info</h3>
+              
           <div class="form-group">
             <label class="col-lg-3 control-label">First name:</label>
             <div class="col-lg-8">

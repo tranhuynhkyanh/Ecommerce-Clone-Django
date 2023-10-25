@@ -1,7 +1,7 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.template.loader import render_to_string
 from .models import Product,ProductImages,Vendor,Category,Order,OrderItems,Cart,ProductInventory,ProductCart,Address,ProductReview,Wishlist
-from django.db.models import Q,Count, Window,Sum
+from django.db.models import Q,Count, Window,Sum,Case,When
 from django.core.paginator import Paginator,Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from userauth.models import Follow
@@ -30,16 +30,26 @@ def add_review(request):
     else:
         return JsonResponse({'message':"You need to buy this before"})
 
-@login_required
+
 def filter_product(request):
-    categories = request.GET.getlist("category[]")
-    vendors = request.GET.getlist("vendor[]")
+    categories = request.GET.getlist("filter_category[]")
+    vendors = request.GET.getlist("filter_vendor[]")
     products= Product.objects.all()
+    sort = request.GET.get("sort")
+    price_min = request.GET.get("priceMin").replace(".00","") if request.GET.get("priceMin") else 10000
+    price_max = request.GET.get("priceMax").replace(".00","") if request.GET.get("priceMax") else 10000000
+    products = Product.objects.filter(Q(price__range=(price_min, price_max), old_price__isnull=False) | Q(old_price__range=(price_min, price_max)))
+
     
     if len(categories)>0:
-        products = products.filter(category__id__in=categories).distinct()
+        products = products.filter(category__id__in=categories)
     if len(vendors)>0:
-        products = products.filter(vendor__id__in=vendors).distinct()
+        products = products.filter(vendor__id__in=vendors)
+    products= products.order_by(Case(
+        When(price__isnull=False,then="price"),
+        default ="old_price",)) if sort == 1 else products.order_by(-Case(
+                                        When(price__isnull=False,then="price"),
+                                        default ="old_price",))
     paginator = Paginator(products, 9)
     page = request.GET.get('page')
     try:
@@ -51,27 +61,56 @@ def filter_product(request):
     except EmptyPage:
         # If the page is out of range, show the last page
         paginated_products = paginator.page(paginator.num_pages)
-    data = render_to_string("filtered/product-list.html",{'products':paginated_products})
-    return JsonResponse({'data':data})
+    if 'page=' in request.get_full_path():
+        category_q = Category.objects.filter(id__in=categories).values_list("cid",flat=True)
+        vendor_q = Vendor.objects.filter(id__in=vendors).values_list("vid",flat=True)
+        category = Category.objects.all()
+        brand = Vendor.objects.all()
+        top_products = top_selling()
+        price = [price_min,price_max]
+        context ={
+        'vendor_q': vendor_q,
+        'category_q' : category_q,
+        'products' : paginated_products,
+        'categories' : category,
+        'brands': brand,
+        'tops': top_products,
+        'price_q':price
+         }
+        return render(request,"filtered/store-filter.html",context=context)
+    else:
+        data = render_to_string("filtered/product-list.html",{'products':paginated_products},request=request)
+        return JsonResponse({'data':data})
+
+def filter_price(request):
+    pass
+    #data = render_to_string("filtered/product-list.html",{'products':products})
+    #return JsonResponse({'data':data})
 
 def top_selling():
     order_items = OrderItems.objects.annotate(
         quantity_ordered=Count('quantity'),
         rank=Window(expression=Count('quantity'), order_by=Count('quantity').desc())
     ).order_by('-rank')
-    print(order_items.values_list('item',flat=True))
     return Product.objects.filter(id__in=order_items.values_list('item'))
 
 @login_required
 def check_product(request):
     pid =  request.GET.get("pid") 
     qty = request.GET.get("qty") 
+    mode = request.GET.get("mode")
     product = get_object_or_404(Product,pid=pid)
+    #Check if cart:
+    if mode == "1":
+        product_inven_cart = 0
+    else:
+        product_in_cart = get_object_or_404(ProductCart,user=request.user,product=product)
+        product_inven_cart = product_in_cart.qty if product_in_cart else 0
     product_inventory = ProductInventory.objects.get(product=product)
     qty_product = product_inventory.get_qty()
     print(pid,qty)
-    if qty_product < int(qty):
-        messages = "Số lượng vượt quá kho hàng !!! Vui lòng chọn ít hơn " + str(qty_product+1)
+    if qty_product < int(qty) + product_inven_cart :
+        messages = "Số lượng vượt quá kho hàng !!! Vui lòng chọn ít hơn " + str(qty_product+1) if product_inven_cart ==0 else "Số lượng kho không đủ nếu thêm! Kiểm tra số lượng sản phẩm trong giỏ hàng."
     else:
         messages = ""
     if product.price != None:
@@ -268,3 +307,7 @@ def remove_from_wishlist(request,pid):
     product_remove = Wishlist.objects.get(product=Product.objects.get(pid=pid))
     product_remove.delete()
     return redirect("wishlist")
+
+def get_vendor_review(request,vid):
+    reviews = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=Vendor.objects.get(vid=vid)).all())
+    print(reviews)

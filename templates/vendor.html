@@ -41,7 +41,7 @@
 						<!-- /LOGO -->
                         <div class="col-md-2">
                             <div class="container">
-                                <a id= "vendorS" href="#"  style="color: white;" class="primary-btn">Reviews: {{review_vendor}}<i class="fa fa-star"></i> ({{total_review}}) </a>                           
+                                <a id= "vendorS" href="#"  style="color: white;" class="primary-btn">Reviews: {{review_vendor}} <i class="fa fa-star"></i> ({{total_review}}) </a>                           
                                 <a id= "vendorS" href="#"  style="color: white;" class="primary-btn"></i>Total sold: {{total_sold}}</a>
                             </div>
                             
@@ -103,7 +103,11 @@
                                         <div class="product-body">
                                             <p class="product-category">{{new.category.title}}</p>
                                             <h3 class="product-name"><a href="{%url 'product-detail' new.pid%}">{{new.title}}</a></h3>
-                                            <h4 class="product-price">{{new.price}}<del class="product-old-price">{{new.old_price}}</del></h4>
+                                            {%if new.price %}
+                                                <h4 class="product-price">{{new.price}} <del class="product-old-price">{{new.old_price}}</del></h4>
+                                            {%else%}
+                                                <h4 class="product-price">{{new.old_price}}</h4>
+                                            {%endif%}
                                             <div class="product-rating">
                                                 <i class="fa fa-star"></i>
                                                 <i class="fa fa-star"></i>
@@ -156,15 +160,28 @@
                     </div>
 					<div id="store" class="col-md-12">
                             <!-- store products -->
-                            <div class="pagination">
-                                {% if products.has_previous %}
-                                    <a href="?page={{ products.previous_page_number }}">Previous</a>
-                                {% endif %}
-                                <span class="current-page">{{ products.number }}</span>
-                                {% if products.has_next %}
-                                    <a href="?page={{ products.next_page_number }}">Next</a>
-                                {% endif %}
-                            </div>
+                            <div id="paginator" class="row">
+                                <ul class="store-pagination">
+                                    {% if products.has_previous %}
+                                        
+                                        <li><a href="?page={{ products.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+                                        <li><a href="?page={{ products.previous_page_number }}">{{ products.previous_page_number }}</a></li>
+                                    {% endif %}
+        
+                                    {% if products.number != products.paginator.num_pages  %}
+                                        <li class="active"><a href="?page={{ products.number }}">{{ products.number }}</a></li>
+                                    {%endif%}
+                                        <li> ... {{range}} </li>
+                                    {%if products.number == products.paginator.num_pages%}
+                                        <li class="active"><a href="?page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
+                                    {%else%}
+                                        <li ><a href="?page={{ products.paginator.num_pages }}">{{ products.paginator.num_pages }}</a></li>
+                                    {% endif %}
+                                    {% if products.has_next %}
+                                        <li><a href="?page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+                                    {% endif %}
+                            
+                                </ul></div>
                             <div class="row">
                                 {%for product in products%}
                                 <!-- product -->
@@ -176,10 +193,12 @@
                                             {%else%}
                                                 <img src="{{product.image_url}}" alt="">
                                             {%endif%}
-                                            <div class="product-label">
-                                                <span class="sale">-30%</span>
-                                                <span class="new">NEW</span>
-                                            </div>
+                                            {%if product.price %}
+                                                <div class="product-label">
+                                                    <span class="sale">-{{product.get_percentage_discount}}%</span>
+                                                    <span class="new">NEW</span>
+                                                </div>
+                                            {%endif%}
                                         </div>
                                         <div class="product-body">
                                             <p class="product-category">{{product.category}}</p>

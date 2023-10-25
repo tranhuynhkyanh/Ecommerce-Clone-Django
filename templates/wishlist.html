@@ -14,10 +14,12 @@
                         {%else%}
                             <img width = "200" height="200" src="{{product.image_url}}" alt="{{product.get_absolute_url}">
                         {%endif%}
+                        {%if product.price %}
                         <div class="product-label">
-                            <span class="sale">-30%</span>
+                            <span class="sale">-{{product.get_percentage_discount}}%</span>
                             <span class="new">NEW</span>
                         </div>
+                    {%endif%}
                     </div>
                     <div class="product-body">
                         <p class="product-category">{{product.category}}</p>

@@ -33,7 +33,7 @@
                   <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                       <div class="qty-label">
                           Qty
-                          <div class="input-number">
+                          <div class="input-number1">
                               <input id="quantity" type="number" name={{item.product.pid}}  value={{item.qty}} onchange="changeFunction(this.value,this.name)">
                               <span class="qty-up">+</span>
                               <span class="qty-down">-</span>
@@ -88,6 +88,7 @@
       data: {
         pid: name,
         qty: val,
+        mode:1,
       },
       success: function(response) {
         console.log(response.messages);
@@ -113,6 +114,7 @@
       data:{
         pid: name,
         qty: value,
+        mode: 1,
       },
       success: function() {
         alert("Cap nhat thanh cong!");

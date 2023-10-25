@@ -55,7 +55,6 @@ def StoreView(request):
     }
     return render(request,'store.html',context)
 
-
 def CategoryView(request,cid):
     category = get_object_or_404(Category,cid=cid)
     products = Product.objects.filter(category=category).all()
@@ -76,7 +75,7 @@ def ProductView(request,pid):
     product_related = Product.objects.filter(category=cate).exclude(pid=pid).all()
     vendor = Vendor.objects.filter(product=product).first()
     reviews = ProductReview.objects.filter(product=product).all()
-    paginator = Paginator(reviews,3)
+    paginator = Paginator(reviews,2)
     page = request.GET.get('page')
     
     try:
@@ -121,7 +120,8 @@ def ProductView(request,pid):
 def VendorView(request,vid):
     vendor = get_object_or_404(Vendor,vid=vid)
     if request.user != vendor.user:
-        review_vendor = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=vendor)).aggregate(Avg('rating'))
+        review_vendor = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=vendor)).values('rating').aggregate(Avg('rating'))['rating__avg']
+        print(review_vendor)
         total_review = ProductReview.objects.filter(product__in=Product.objects.filter(vendor=vendor)).all().count()
         total_sold = OrderItems.objects.filter(item__in=Product.objects.filter(vendor=vendor)).values('quantity').aggregate(Sum('quantity'))['quantity__sum']
         products = Product.objects.filter(vendor=vendor).all()
@@ -152,7 +152,7 @@ def VendorView(request,vid):
             'products' : paginated_products,
             'is_followed': is_followed,
             'new_products': new_products,
-            'review_vendor': review_vendor if not review_vendor else 0,
+            'review_vendor': review_vendor if review_vendor else 0,
             'total_sold' : total_sold if total_sold else 0,
  
         }

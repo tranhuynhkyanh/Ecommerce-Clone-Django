@@ -97,14 +97,14 @@
 							<h3 class="aside-title">Price</h3>
 							<div class="price-filter">
 								<div id="price-slider" ></div>
-								<div class="input-number price-min"  >
-									<input id="price-min" type="number" min="10"  min="10000">
+								<div class="input-number price-min" >
+									<input id="price-min" type="number" step="10000">
 									<span class="qty-up">+</span>
 									<span class="qty-down">-</span>
 								</div>
 								<span>-</span>
 								<div class="input-number price-max">
-									<input id="price-max" type="number" max="1000000">
+									<input id="price-max" type="number" step="10000">
 									<span class="qty-up">+</span>
 									<span class="qty-down">-</span>
 								</div>
@@ -223,7 +223,7 @@
 
 						<!-- store products -->
 					
-						<div class="row">
+						<div class="row" id="filter-products">
 							{%for product in products%}
 							<!-- product -->
 							<div class="col-md-4 col-xs-6">
@@ -297,31 +297,5 @@
 		<!-- /SECTION -->
 {%endblock body%}
 {%block script%}
-<script>
-	const priceRange = document.querySelector("#price-slider");
-	const priceMin = document.querySelector("#price-min");
-	const priceMax = document.querySelector("#price-max");
-	priceRange.addEventListener("input", () => {
-		priceMin.textContent = priceRange.min;
-		priceMax.textContent = priceRange.max;
-	  });
-	priceRange.addEventListener("input", () => {
-	const data = {
-		q: input.value,
-		priceMin: priceMin.textContent,
-		priceMax: priceMax.textContent,
-	};
 
-	// Gửi yêu cầu AJAX
-	$.ajax({
-		url: "/search",
-		type: "GET",
-		data,
-		success: function(response) {
-		// Hiển thị kết quả trong trình duyệt
-		$("#results").html(response);
-		}
-	});
-	});
-</script>
 {%endblock script%}

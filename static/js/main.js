@@ -101,9 +101,7 @@
 	}
 
 	/////////////////////////////////////////
-
-	// Input number
-	$('.input-number').each(function() {
+	$('.input-number1').each(function() {
 		var $this = $(this),
 		$input = $this.find('input[type="number"]'),
 		up = $this.find('.qty-up'),
@@ -124,16 +122,41 @@
 			updatePriceSlider($this , value)
 		})
 	});
+	// Input number
+	$('.input-number').each(function() {
+		var $this = $(this),
+		$input = $this.find('input[type="number"]'),
+		up = $this.find('.qty-up'),
+		down = $this.find('.qty-down');
+
+		down.on('click', function () {
+			var value = parseInt($input.val()) - 10000;
+			value = value < 10000 ? 10000 : value;
+			$input.val(value);
+			$input.change();
+			updatePriceSlider($this , value)
+		})
+
+		up.on('click', function () {
+			var value = parseInt($input.val()) + 10000;
+			$input.val(value);
+			$input.change();
+			updatePriceSlider($this , value)
+		})
+	});
 
 	var priceInputMax = document.getElementById('price-max'),
 			priceInputMin = document.getElementById('price-min');
 
 	priceInputMax.addEventListener('change', function(){
-		updatePriceSlider($(this).parent() , this.value)
+		filter_price();
+		updatePriceSlider($(this).parent() , this.value);
 	});
 
 	priceInputMin.addEventListener('change', function(){
-		updatePriceSlider($(this).parent() , this.value)
+		filter_price();
+		updatePriceSlider($(this).parent() , this.value);
+		
 	});
 
 	function updatePriceSlider(elem , value) {
@@ -144,24 +167,52 @@
 			console.log('max')
 			priceSlider.noUiSlider.set([null, value]);
 		}
+		let filter_object = {};
+		$(".filter-checkbox").each(function(){
+			let filter_value = $(this).val();
+			let filter_key = $(this).data("filter");
+			console.log("Filter value:", filter_value);
+			console.log("Filter key:", filter_key)
+			filter_object[filter_key] = Array.from(document.querySelectorAll('input[data-filter='+filter_key+']:checked')).map(function(element){
+				return element.value
+			});
+		});
+		const data  ={
+			filter_category : filter_object.category,
+			filter_vendor : filter_object.vendor,
+			priceMin : priceInputMin.value,
+			priceMax : priceInputMax.value,
+			sort: $("#sort-by").value
+		}
+		console.log(data);
+		// Gửi yêu cầu AJAX
+		$.ajax({
+			url: '/filter-product',
+			data: data,
+			datatype: 'json',
+			success: function(response){
+				console.log(response);
+				$("#filter-products").html(response.data);
+			}
+		});
 	}
-
 	// Price Slider
 	var priceSlider = document.getElementById('price-slider');
 	if (priceSlider) {
 		noUiSlider.create(priceSlider, {
-			start: [1, 999],
+			start: [10000, 10000000],
 			connect: true,
-			step: 1,
+			step: 10000,
 			range: {
-				'min': 1,
-				'max': 999
+				'min': 10000,
+				'max': 10000000
 			}
 		});
 
 		priceSlider.noUiSlider.on('update', function( values, handle ) {
 			var value = values[handle];
 			handle ? priceInputMax.value = value : priceInputMin.value = value
+			
 		});
 	}
 

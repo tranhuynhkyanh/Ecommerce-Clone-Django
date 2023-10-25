@@ -180,6 +180,55 @@ textarea.input {
   color: #D10024;
 }
 
+.input-number1 {
+  position: relative;
+}
+
+.input-number1 input[type="number"]::-webkit-inner-spin-button, .input-number1 input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-number1 input[type="number"] {
+  -moz-appearance: textfield;
+  height: 40px;
+  width: 100%;
+  border: 1px solid #E4E7ED;
+  background-color: #FFF;
+  padding: 0px 35px 0px 15px;
+}
+
+.input-number1 .qty-up, .input-number1 .qty-down {
+  position: absolute;
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #E4E7ED;
+  background-color: #FFF;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.input-number1 .qty-up {
+  right: 0;
+  top: 0;
+  border-bottom: 0px;
+}
+
+.input-number1 .qty-down {
+  right: 0;
+  bottom: 0;
+}
+
+.input-number1 .qty-up:hover, .input-number1 .qty-down:hover {
+  background-color: #E4E7ED;
+  color: #D10024;
+}
 /*-- Select input --*/
 
 .input-select {
@@ -1276,7 +1325,10 @@ textarea.input {
   display: inline-block;
   width: calc(50% - 7px);
 }
-
+.price-filter .input-number1 {
+  display: inline-block;
+  width: calc(50% - 7px);
+}
 /*----------------------------*\
 	Store
 \*----------------------------*/
