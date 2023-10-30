@@ -72,6 +72,6 @@ urllib3==1.26.15
 waitress==2.1.2
 wcwidth==0.2.6
 whitenoise==6.4.0
-kombu==5.3.1
+kombu==5.3.0b1
 celery
 django-celery-results==2.5.1
