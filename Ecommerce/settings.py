@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
     "channels",
-    "chat"
+    "chat",
+    'django_celery_results',
     
 ]
 
@@ -217,10 +218,11 @@ if DEBUG == False:
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("kyanhstore.onrender.com.", 6379)],
+            "hosts": [("redis://red-ckvn04237rbc739cpkp0", 6379)],
         },
     },
-}
+    }
+    CELERY_BROKER_URL = 'amqp://localhost'
 else:
     ADMIN_ENABLED = True
     DATABASES = {
@@ -235,6 +237,14 @@ else:
             "hosts": [("127.0.0.1", 6379)],
         },
     }}
+    CELERY_BROKER_URL = f"amqp://rabbitmq:Kyanhkoglxag1609.@rabbitmq-store.onrender.com:5672//"
 
 
-   
+
+# django setting. 
+INSTALLED_APPS += [
+    'celery',
+    'pika'
+]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
