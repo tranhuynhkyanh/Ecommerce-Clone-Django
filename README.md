@@ -3,6 +3,10 @@ Multi vendor shopping with Django Framework.
 
 [Live demo on Render](https://kyanhstore.onrender.com) kyanhstore.onrender.com
 
+Feature:
+- Cart, Order, Wishlist, Profile.
+- Realtime Chat with vendor ( Using websocket)
+ 
 ![Main](https://imageupload.io/ib/eUC04QOi4pWtMVX_1698221049.png)
 
 
