@@ -218,11 +218,12 @@ if DEBUG == False:
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis://red-ckvn04237rbc739cpkp0", 6379)],
+            "hosts": ["redis://red-ckvn04237rbc739cpkp0:6379"],
         },
     },
     }
-    CELERY_BROKER_URL = 'amqp://localhost'
+    CELERY_BROKER_URL = f"amqp://rabbitmq:Kyanhkoglxag1609.@rabbitmq-store.onrender.com:5672//"
+   
 else:
     ADMIN_ENABLED = True
     DATABASES = {
@@ -237,7 +238,7 @@ else:
             "hosts": [("127.0.0.1", 6379)],
         },
     }}
-    CELERY_BROKER_URL = f"amqp://rabbitmq:Kyanhkoglxag1609.@rabbitmq-store.onrender.com:5672//"
+    CELERY_BROKER_URL = 'amqp://localhost'
 
 
 
