@@ -284,7 +284,7 @@ def order_create(request):
             "order":order,
             "order_items":order_items
         }
-        order_email.delay(order_firstname=request.user.first_name,order_id=order.id,order_mail=request.user.email)
+        #order_email.delay(order_firstname=request.user.first_name,order_id=order.id,order_mail=request.user.email)
         return render(request,"payment-completed.html",context)
     else:
         return redirect('index')
