@@ -216,7 +216,7 @@ if DEBUG == False:
         },
     },
     }
-    CELERY_BROKER_URL = "amqp://rabbitmq:Kyanhkoglxag1609.@rabbitmq-store" 
+    CELERY_BROKER_URL = "rediss://red-ckvn04237rbc739cpkp0:XoWzIeIrrs5To0l49z4EI1GtsdIm6wCz@singapore-redis.render.com" 
    
 else:
     ADMIN_ENABLED = True
