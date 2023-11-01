@@ -8,3 +8,4 @@ python manage.py collectstatic --no-input
 python manage.py makemigrations
 python manage.py migrate --run-syncdb
 python -m celery -A Ecommerce worker -l info --pool=solo
+python -m gunicorn myproject.asgi:application
