@@ -5,8 +5,8 @@ Multi vendor shopping with Django Framework.
 
 Feature:
 - Cart, Order, Wishlist, Profile.
-- Realtime Chat with vendor ( Using websocket)
- 
+- Realtime Chat with vendor (Using websocket)
+- Email send when order created (Using celery) 
 ![Main](https://imageupload.io/ib/eUC04QOi4pWtMVX_1698221049.png)
 
 
