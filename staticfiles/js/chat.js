@@ -2,7 +2,7 @@ const id = JSON.parse(document.getElementById('json-username').textContent)
 const message_username = JSON.parse(document.getElementById('json-message-username').textContent);
 const receiver = JSON.parse(document.getElementById('json-username-receiver').textContent);
 
-const socket = new WebSocket("wss://"+ window.location.host+ "/wss/"+id+"/");
+const socket = new WebSocket("wss://"+ window.location.host+ "/chat/"+id+"/");
 
 socket.onopen = function(e){
     console.log("CONNECTION ESTABLISHED");

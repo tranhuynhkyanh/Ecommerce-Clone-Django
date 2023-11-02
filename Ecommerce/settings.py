@@ -233,7 +233,9 @@ else:
         },
     }}
     CELERY_BROKER_URL = 'amqp://localhost'
-
+    INSTALLED_APPS += [
+        "sslserver",
+    ]
 
 
 # django setting. 
