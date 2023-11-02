@@ -20,7 +20,7 @@ django.setup()
 
 
 application = ProtocolTypeRouter({
-    "https": get_asgi_application(), 
+    "http": get_asgi_application(), 
     'websocket': AuthMiddlewareStack(
         URLRouter([
             path('chat/<int:id>/', PersonalChatConsumer.as_asgi()),
