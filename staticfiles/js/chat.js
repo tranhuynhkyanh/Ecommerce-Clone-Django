@@ -23,18 +23,18 @@ socket.onmessage = function(e){
         document.querySelector('#chat-body').innerHTML += `  
         <li class="clearfix">
             <div class="message-data text-right">
-                <span class="message-data-time">{{date}}</span>
+                <span class="message-data-time">${date}</span>
                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
             </div>
-            <div class="message other-message float-right"> {{data.message}} </div>
+            <div class="message other-message float-right"> ${data.message} </div>
          </li>`
     }else{
         document.querySelector('#chat-body').innerHTML += `  
         <li class="clearfix">
             <div class="message-data">
-                <span class="message-data-time">{{date}}</span>
+                <span class="message-data-time">${date}</span>
             </div>
-            <div class="message my-message">{{data.message}}</div>                                    
+            <div class="message my-message">${data.message}</div>                                    
         </li>`
     }
 }
