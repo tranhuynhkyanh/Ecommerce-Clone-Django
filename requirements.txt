@@ -83,3 +83,4 @@ h2==4.1.0
 hpack==4.0.0 
 hyperframe==6.0.1 
 priority==1.3.0
+channels-redis
