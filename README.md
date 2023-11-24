@@ -9,7 +9,7 @@ Feature:
 - Sort and filtering products
 - Realtime Chat with vendor (Using websocket)
 - Email send when order created (Using celery) 
-![Main](https://imageupload.io/ib/eUC04QOi4pWtMVX_1698221049.png)
+![Main](https://drive.google.com/uc?id=1P3WYW9yCKyMO4bcH4YSCpJaaWxZzWW6l)
 
 
 
