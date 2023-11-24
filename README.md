@@ -5,6 +5,7 @@ Multi vendor shopping with Django Framework.
 
 Feature:
 - CRUD Cart, Order, Wishlist, Profile.
+- Authentication user
 - Sort and filtering products
 - Realtime Chat with vendor (Using websocket)
 - Email send when order created (Using celery) 
